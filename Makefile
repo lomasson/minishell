@@ -6,7 +6,7 @@
 #    By: lomasson <marvin@42.ft>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/06/28 11:46:13 by lomasson         ###   ########.fr        #
+#    Updated: 2022/06/28 12:30:59 by lomasson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,9 @@ CFLAGS = -Wall -Werror -Wextra -g
 LDFLAGS = $(NAME_lib)
 
 
-SRCS = main.c
+SRCS = srcs/main.c \
+				srcs/pipe/pipe_utils.c \
+				srcs/pipe/pipe.c
 
 SRCS_libft = libft/ft_isdigit.c \
 				libft/ft_isalnum.c \
