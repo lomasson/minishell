@@ -1,6 +1,7 @@
 test*
-*.o
-*/*.o
-*.a
+*.[oa]
+*/*.[oa]
 minishell
 *.dSYM
+.DS_Store
+.vs_code/

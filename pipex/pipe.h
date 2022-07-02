@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomasson <marvin@42.ft>                    +#+  +:+       +#+        */
+/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 16:38:41 by lomasson          #+#    #+#             */
-/*   Updated: 2022/06/28 12:38:49 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/02 16:04:05 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPE_H
 # define PIPE_H
 
-# include "../../minishell.h"
-# include "../../libft/libft.h"
+# include "../minishell.h"
+# include "../libft/libft.h"
 
 int		processing(char **argv, char **command);
 void	child_procces(int file, int *pipe, char *cmd, char **path);
