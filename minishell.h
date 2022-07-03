@@ -6,7 +6,7 @@
 /*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/03 15:42:16 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/07/03 21:51:15 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,8 @@ void		del_arbre_binaire(t_binbash *root);
 void		display_args(char **args);
 void		display_tree(t_binbash *node, int depth);
 int			globale_verif(t_binbash *node);
+char		*ft_strjoin_get(char *s1, char *s2);
+char		*parse_iter(char *str, int *quote);
+int			parse_argument(t_binbash *node);
+
 #endif
