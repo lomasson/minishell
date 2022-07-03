@@ -6,7 +6,7 @@
 /*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 13:49:03 by chajjar           #+#    #+#             */
-/*   Updated: 2022/07/02 17:21:07 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/07/03 13:29:26 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,22 +56,6 @@ static char	**ft_alloc_element(
 	}
 	return (element);
 }
-
-// void	ft_input_element(char **element, char *str, int (*condition)(char *))
-// {
-// 	int	quote;
-// 	int	index;
-// 	int numb_elem;
-
-// 	index = 0;
-// 	numb_elem = 0;
-// 	quote = 0;
-// 	while (*str && str[index])
-// 	{
-// 		if (&str[index] == occurent(str, condition))
-// 			index += condition(str);
-// 	}	
-// }
 
 char	**ft_split_commande(char *str, int (*condition)(char *))
 {

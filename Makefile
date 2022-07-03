@@ -6,7 +6,7 @@
 #    By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/07/02 17:39:37 by chajjar          ###   ########.fr        #
+#    Updated: 2022/07/03 13:48:23 by chajjar          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@
 NAME = minishell
 LANG = c
 DEFINES = 
-TEST_ARGS = "cat '&&' ls jwovb 'wjviob w bpjihnuwpb'evbovbe'bwvjkpwv  evvjihwk' "
+TEST_ARGS = "cat && ls jwovb 'wjviob w bpjihnuwpb'evbovbe'bwvjkpwv evvjihwk' || ls "
 
 # Compilation options
 COMPILER = default
@@ -60,7 +60,7 @@ PIPEX = $(addprefix $(PIPEX_FOLDER), $(PIPEX_FILES))
 
 # Listing every source files
 ALL = $(LIBFT) $(PIPEX) \
-	arbre_binaire check_condition ft_split_commande ft_split_argument
+	arbre_binaire check_condition ft_split_commande ft_split_argument main
 SUBFOLDER = 
 
 # Adds the applicable extension and path to each files
