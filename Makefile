@@ -6,7 +6,7 @@
 #    By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/07/03 13:48:23 by chajjar          ###   ########.fr        #
+#    Updated: 2022/07/03 15:18:04 by chajjar          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@
 NAME = minishell
 LANG = c
 DEFINES = 
-TEST_ARGS = "cat && ls jwovb 'wjviob w bpjihnuwpb'evbovbe'bwvjkpwv evvjihwk' || ls "
+TEST_ARGS = 
 
 # Compilation options
 COMPILER = default
@@ -28,7 +28,7 @@ FLAGS = -Wall -Werror -Wextra -g3
 ifneq ($(OS), Windows_NT)
 	DANGER = -fsanitize=address
 endif
-LIBRARIES = 
+LIBRARIES = -lreadline
 
 # Messages to display
 COMPILE_MSG = ƒ Compiling $@ ...

@@ -4,4 +4,4 @@ test*
 minishell
 *.dSYM
 .DS_Store
-.vs_code/
+.vscode/

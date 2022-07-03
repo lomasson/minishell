@@ -6,7 +6,7 @@
 /*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:42:47 by chajjar           #+#    #+#             */
-/*   Updated: 2022/07/03 13:48:19 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/07/03 15:22:20 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ t_binbash	*arbre_decison_tree(t_binbash *node)
 {
 	char	**element;
 
+	if (!node->content)
+		return (node);
 	if (occurent(node->content, check_condition))
 		element = ft_split_commande(node->content, check_condition);
 	else if (occurent(node->content, check_pipe))
@@ -37,15 +39,29 @@ t_binbash	*arbre_decison_tree(t_binbash *node)
 		element = ft_split_commande(node->content, check_redirection);
 	else
 	{
-		node->content = (void *) ft_split_arg(node->content);
+		element = ft_split_arg(node->content);
+		free(node->content);
+		node->content = (void *) element;
 		return (node);
 	}
+	free(node->content);
 	node->type = 1;
 	node->content = element[1];
 	node->left = arbre_decison_tree(creat_node(element[0], node));
 	node->right = arbre_decison_tree(creat_node(element[2], node));
 	free(element);
 	return (node);
+}
+
+void	del_arbre_binaire(t_binbash *root)
+{
+	if (!root)
+		return ;
+	if (root->content)
+		free(root->content);
+	del_arbre_binaire(root->left);
+	del_arbre_binaire(root->right);
+	free(root);
 }
 
 void	display_args(char **args)

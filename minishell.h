@@ -6,7 +6,7 @@
 /*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/03 13:45:31 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/07/03 15:22:37 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <sys/wait.h>
 # include "libft/libft.h"
 # include "pipex/pipe.h"
+# include <readline/readline.h>
+# include <readline/history.h>
 # include <string.h>
 
 typedef struct s_binbash
@@ -42,6 +44,7 @@ char		**ft_split_commande(char *str, int (*condition)(char *));
 char		**ft_split_arg(char *str);
 t_binbash	*creat_node(void *content, t_binbash *prev);
 t_binbash	*arbre_decison_tree(t_binbash *node);
+void		del_arbre_binaire(t_binbash *root);
 void		display_args(char **args);
 void		display_tree(t_binbash *node, int depth);
 
