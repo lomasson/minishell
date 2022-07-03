@@ -6,7 +6,7 @@
 #    By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/07/03 15:18:04 by chajjar          ###   ########.fr        #
+#    Updated: 2022/07/03 15:45:26 by chajjar          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,7 @@ PIPEX = $(addprefix $(PIPEX_FOLDER), $(PIPEX_FILES))
 
 # Listing every source files
 ALL = $(LIBFT) $(PIPEX) \
-	arbre_binaire check_condition ft_split_commande ft_split_argument main
+	arbre_binaire check_condition ft_split_commande ft_split_argument main verif_commande
 SUBFOLDER = 
 
 # Adds the applicable extension and path to each files

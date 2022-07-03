@@ -6,7 +6,7 @@
 /*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 13:43:14 by chajjar           #+#    #+#             */
-/*   Updated: 2022/07/03 15:22:53 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/07/03 15:45:03 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ int	main(void)
 		if (!buffer)
 			return (0);
 		root = arbre_decison_tree(creat_node(buffer, 0));
-		display_tree(root, 0);
+		if (globale_verif(root))
+			display_tree(root, 0);
+		else
+			ft_printf("parsing error retry\n");
 		del_arbre_binaire(root);
 	}
 }
