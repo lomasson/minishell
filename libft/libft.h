@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomasson <marvin@42.ft>                    +#+  +:+       +#+        */
+/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/25 11:45:46 by lomasson          #+#    #+#             */
-/*   Updated: 2022/06/28 12:55:59 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/04 10:41:10 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,5 @@ int		ft_print_hexa(unsigned int nb, int u, int count);
 int		ft_print_num(long int n, int count);
 int		ft_print_u(unsigned int n, int count);
 int		ft_print_ptr(unsigned long int n, int u, int count);
+int     ft_strcmp(char *s1, char *s2);
 #endif

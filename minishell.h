@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/03 21:51:15 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/07/04 18:06:56 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <string.h>
+# include <stdbool.h>
+# include <signal.h>
 
 typedef struct s_binbash
 {
@@ -51,5 +53,12 @@ int			globale_verif(t_binbash *node);
 char		*ft_strjoin_get(char *s1, char *s2);
 char		*parse_iter(char *str, int *quote);
 int			parse_argument(t_binbash *node);
+void		exec_cmd(char *command, int fd_in, int fd_out, char **env);
+t_binbash	*exec_all_command(t_binbash *root, char **env);
+char		*parsing_access_test(char **path, char **cmd_splited);
+void		ft_exec_built_in(char **cmd_splited);
+bool		ft_is_built_in(char *command);
+void		built_in_cd(char *path);
+void		built_in_pwd(void);
 
 #endif
