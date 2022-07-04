@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+         #
+#    By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/07/03 15:45:26 by chajjar          ###   ########.fr        #
+#    Updated: 2022/07/04 23:38:28 by lomasson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ LIBFT_FILES = ft_isdigit ft_isalnum ft_isascii ft_isprint ft_isalpha \
 		ft_memchr ft_memcmp ft_strnstr ft_atoi ft_calloc ft_strdup \
 		ft_substr ft_strjoin ft_strtrim ft_split ft_itoa ft_putchar_fd \
 		ft_putstr_fd ft_putendl_fd ft_putnbr_fd ft_striteri ft_strmapi \
-		get_next_line ft_printf_utils ft_printf
+		get_next_line ft_printf_utils ft_printf ft_strcmp
 LIBFT_FOLDER = libft/
 LIBFT = $(addprefix $(LIBFT_FOLDER), $(LIBFT_FILES))
 
@@ -60,7 +60,7 @@ PIPEX = $(addprefix $(PIPEX_FOLDER), $(PIPEX_FILES))
 
 # Listing every source files
 ALL = $(LIBFT) $(PIPEX) \
-	arbre_binaire check_condition ft_split_commande ft_split_argument main verif_commande
+	arbre_binaire check_condition ft_split_commande ft_split_argument main verif_commande builtins exec_cmd
 SUBFOLDER = 
 
 # Adds the applicable extension and path to each files
