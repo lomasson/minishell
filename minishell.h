@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/06 20:30:36 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/08 11:49:24 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,12 @@ int			globale_verif(t_binbash *node);
 char		*ft_strjoin_get(char *s1, char *s2);
 char		*parse_iter(char *str, int *quote);
 int			parse_argument(t_binbash *node);
-void		exec_cmd(char **command, int fd_in, int fd_out, t_environement *env);
+void		exec_cmd(char **command, int fd_in,
+				int fd_out, t_environement *env);
 t_binbash	*exec_all_command(t_binbash *root, t_environement *env);
 char		*parsing_access_test(char **path, char **cmd_splited);
-void		ft_exec_built_in(char **cmd_splited, int fd_entry, int *fds, t_environement *env);
+void		ft_exec_built_in(char **cmd_splited,
+				int fd_entry, int *fds, t_environement *env);
 bool		ft_is_built_in(char *command);
 void		built_in_cd(char *path, t_environement *env);
 void		built_in_pwd(int fd);
@@ -71,5 +73,9 @@ char		*ft_change_path(char *op_path, char *path);
 char		*change_old_path(t_environement *env);
 void		built_in_export(t_environement *env, char *name);
 void		built_in_unset(t_environement *env, char *name);
+void		ft_tabjoin(t_environement *env, char *src);
+void		ft_define_env_var(t_environement *env, char **envp);
+int			ft_pipe(t_binbash *root,
+				t_environement *env, int *fd_in, int *fd_out);
 
 #endif

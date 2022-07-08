@@ -25,7 +25,6 @@ void	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 	if (!pid)
 	{
 		path = parsing_core(cmd[0], env->var);
-		printf("address: %s\n", path);
 		if (!path)
 			return ;
 		if (fd_in != 0)
@@ -42,12 +41,10 @@ void	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 			perror("shell");
 		close(fd_in);
 		close(fd_out);
-		return ;
+		exit(EXIT_FAILURE);
 	}
 	else
-	{
 		waitpid(pid, NULL, 0);
-	}
 }
 
 // fd[1] = out
@@ -60,6 +57,8 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 	int		out_gestion;
 	char	**state_tab;
 	char	**state_tmp;
+	int		pipe_e[2];
+	int		parent;
 
 	out_gestion = 0;
 	if (root->type == 0)
@@ -72,10 +71,47 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 	}
 	fd[1] = 1;
 	fd[0] = 0;
+	state_tmp = (char **)malloc(sizeof(char) * 2);
+	state_tmp[0] = NULL;
+	state_tmp[1] = NULL;
 	fd_entry = STDIN_FILENO;
 	while (state_tab[0])
 	{
-		if (ft_strcmp(state_tab[0], "<") == 0)
+		if (ft_strcmp(state_tab[0], "|") == 0)
+		{
+			fd[0] = fd_entry;
+			state_tab = (char **)root->left->content;
+			out_gestion = 2;
+			pipe (pipe_e);
+			parent = fork();
+			if (!parent)
+			{
+				if (state_tab[1])
+					state_tab[0] = ft_strjoin(
+							ft_strjoin(state_tab[0], " "), state_tab[1]);
+				close(fd[1]);
+				child_procces(fd[0], pipe_e, state_tab[0],
+					parsing_core(state_tab[0], env->var));
+				exit(EXIT_FAILURE);
+			}
+			else
+				waitpid(parent, NULL, 0);
+			close(pipe_e[1]);
+			root = root->right;
+			if (root->type == 0)
+				state_tab = (char **)root->content;
+			else
+			{
+				state_tab[0] = (char *)root->content;
+				state_tab[1] = NULL;
+			}
+			fd_entry = pipe_e[0];
+		}
+		else if (ft_strcmp(state_tab[0], "||") == 0)
+			ft_printf("not work\n");
+		else if (ft_strcmp(state_tab[0], "&&") == 0)
+			ft_printf("not work\n");
+		else if (ft_strcmp(state_tab[0], "<") == 0)
 		{
 			out_gestion = 1;
 			if (root->right->type == 0)
@@ -98,22 +134,6 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 				state_tmp = (char **)root->left->content;
 			state_tab = state_tmp;
 		}
-		else if (ft_strcmp(state_tab[0], "|") == 0)
-		{
-			out_gestion = 2;
-			pipe(fd);
-		}
-		else if (ft_strcmp(state_tab[0], "||") == 0)
-		{
-			out_gestion = 2;
-			pipe(fd);
-		}
-		else if (ft_strcmp(state_tab[0], "&&") == 0)
-		{
-			out_gestion = 2;
-			pipe(fd);
-			root = root->left;
-		}
 		else if (ft_strcmp(state_tab[0], ">>") == 0)
 		{
 			out_gestion = 1;
@@ -121,26 +141,23 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 					O_CREAT | O_APPEND, 0777);
 		}
 		else if (ft_strcmp(state_tab[0], "<<") == 0)
-		{
-			out_gestion = 2;
-			pipe(fd);
-		}
-		if (ft_is_built_in(state_tab[0]) == 1)
+			ft_printf("not work\n");
+		if (ft_is_built_in(state_tab[0]))
 			ft_exec_built_in(state_tab, fd_entry, fd, env);
 		else if (state_tab)
 			exec_cmd(state_tab, fd_entry, fd[1], env);
 		if (out_gestion == 2)
 			fd_entry = fd[0];
+		if (!root->right && !root->left)
+			break ;
 		if (root->right)
 			root = root->right;
-		if (!root->right || !root->left)
-			break ;
-		break ;
-		if (root->type == 1)
+		if (root->type == 0)
 			state_tab = (char **)root->content;
 		else
 		{
 			state_tab[0] = (char *)root->content;
+			state_tab[1] = NULL;
 		}
 	}
 	return (root);

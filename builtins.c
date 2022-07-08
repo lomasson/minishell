@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/06 20:38:23 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/08 14:52:37 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void	ft_exec_built_in(char **cmd_splited,
 		built_in_export(env, cmd_splited[1]);
 	else if (ft_strcmp(cmd_splited[0], "unset") == 0)
 		built_in_unset(env, cmd_splited[1]);
+	else if (ft_strcmp(cmd_splited[0], "exit") == 0)
+		exit(1);
 }
 
 /* Check if command informed in param is a built-in*/
@@ -52,7 +54,9 @@ bool	ft_is_built_in(char *command)
 		return (true);
 	if (ft_strcmp(command, "env") == 0)
 		return (true);
-	return (NULL);
+	if (ft_strcmp(command, "exit") == 0)
+		return (true);
+	return (false);
 }
 
 char	*change_old_path(t_environement *env)
@@ -69,39 +73,41 @@ char	*change_old_path(t_environement *env)
 			j++;
 	str = ft_strchr(env->var[i], '/');
 	return (ft_strjoin("OLDPWD=", str));
-	ft_printf("old: %s\n", env->var[j]);
 	free (str);
 }
 
 void	built_in_export(t_environement *env, char *name)
 {
-	int	pos;
-	int	i;
-	int	j;
-	//char *str;
+	int		i;
+	char	**dest;
 
-	pos = 0;
 	i = 0;
-	j = -1;
-	while (env->var[pos])
-		pos++;
-	/*while (name[i] != '=')
+	while (env->var[i])
 		i++;
-	if (i == 0)
-		return ;
-	str = malloc(sizeof(char) * i);
-	while (++j < i)
-		str[j] = name[j];*/
-	env->var[pos] = name;
-	ft_printf("je passe ici: %s\n", env->var[pos]);
+	dest = (char **)malloc(sizeof(char) * (i + 2));
+	i = -1;
+	while (env->var[++i])
+	{
+		dest[i] = env->var[i];
+	}
+	dest[i++] = name;
+	dest[i] = NULL;
+	i = -1;
+	while (dest[++i])
+		env->var[i] = dest[i];
 }
 
 void	built_in_unset(t_environement *env, char *name)
 {
-	int	i;
+	int		i;
 
-	i = 0;
-	while (ft_strncmp(env->var[i], name, ft_strlen(name)) != 0 || env->var[i])
+	i = -1;
+	while (env->var[++i])
+		if (ft_strncmp(env->var[i], name, ft_strlen(name)) == 0)
+			break ;
+	while (env->var[i])
+	{
+		env->var[i] = env->var[i + 1];
 		i++;
-	env->var[i] = NULL;
+	}
 }
