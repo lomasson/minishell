@@ -89,14 +89,16 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 				if (state_tab[1])
 					state_tab[0] = ft_strjoin(
 							ft_strjoin(state_tab[0], " "), state_tab[1]);
-				close(fd[1]);
 				child_procces(fd[0], pipe_e, state_tab[0],
 					parsing_core(state_tab[0], env->var));
+				ft_putstr_fd("je passe ici\n", STDERR_FILENO);
 				exit(EXIT_FAILURE);
 			}
 			else
 				waitpid(parent, NULL, 0);
 			close(pipe_e[1]);
+			//close(pipe_e[0]);
+			//close(fd[1]);
 			root = root->right;
 			if (root->type == 0)
 				state_tab = (char **)root->content;
@@ -142,9 +144,11 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 		}
 		else if (ft_strcmp(state_tab[0], "<<") == 0)
 			ft_printf("not work\n");
+		if (out_gestion != 1)
+			fd[1] = STDOUT_FILENO;
 		if (ft_is_built_in(state_tab[0]))
 			ft_exec_built_in(state_tab, fd_entry, fd, env);
-		else if (state_tab)
+		else if (state_tab && out_gestion != 2 )
 			exec_cmd(state_tab, fd_entry, fd[1], env);
 		if (out_gestion == 2)
 			fd_entry = fd[0];
@@ -159,6 +163,7 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 			state_tab[0] = (char *)root->content;
 			state_tab[1] = NULL;
 		}
+		out_gestion = 0;
 	}
 	return (root);
 }

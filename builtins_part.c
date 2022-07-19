@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:52:11 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/06 16:45:20 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/19 09:24:08 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	built_in_cd(char *path, t_environement *env)
 	char		**op_path;
 
 	i = 0;
+	old++;
 	if (path[0] != '/')
 	{
 		while (ft_strncmp(env->var[i], "PWD", 3) != 0)

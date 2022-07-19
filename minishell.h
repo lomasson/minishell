@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/08 11:49:24 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/19 12:43:17 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,7 @@ char		*change_old_path(t_environement *env);
 void		built_in_export(t_environement *env, char *name);
 void		built_in_unset(t_environement *env, char *name);
 void		ft_tabjoin(t_environement *env, char *src);
-void		ft_define_env_var(t_environement *env, char **envp);
 int			ft_pipe(t_binbash *root,
 				t_environement *env, int *fd_in, int *fd_out);
-
+void		ft_export_utils(t_environement *env, char *name);
 #endif

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/08 14:52:37 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/19 13:09:10 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,34 +67,38 @@ char	*change_old_path(t_environement *env)
 
 	j = 0;
 	i = 0;
-	while (ft_strncmp(env->var[i], "PWD", 3) != 0)
+	while (ft_strncmp(env->var[i], "PWD", 3) != 0 && env->var[j])
 			i++;
-	while (ft_strncmp(env->var[j], "OLDPWD", 6) != 0)
+	while (ft_strncmp(env->var[j], "OLDPWD", 6) != 0 && env->var[j])
 			j++;
 	str = ft_strchr(env->var[i], '/');
 	return (ft_strjoin("OLDPWD=", str));
-	free (str);
 }
 
 void	built_in_export(t_environement *env, char *name)
 {
 	int		i;
+	int		j;
+	int		egal;
 	char	**dest;
 
-	i = 0;
-	while (env->var[i])
-		i++;
-	dest = (char **)malloc(sizeof(char) * (i + 2));
+	j = -1;
+	i = -1;
+	egal = 0;
+	while (name[egal] != '=')
+		egal++;
+	while (env->var[++i])
+		if (ft_strncmp(env->var[i], name, ++egal) == 0)
+			j = i;
+	dest = (char **)malloc(sizeof(char **) * ++i);
+	//if (j >= 0)
+	//	ft_export_utils(env, name);
 	i = -1;
 	while (env->var[++i])
-	{
 		dest[i] = env->var[i];
-	}
 	dest[i++] = name;
 	dest[i] = NULL;
-	i = -1;
-	while (dest[++i])
-		env->var[i] = dest[i];
+	env->var = dest;
 }
 
 void	built_in_unset(t_environement *env, char *name)
@@ -105,9 +109,22 @@ void	built_in_unset(t_environement *env, char *name)
 	while (env->var[++i])
 		if (ft_strncmp(env->var[i], name, ft_strlen(name)) == 0)
 			break ;
-	while (env->var[i])
+	while (env->var[++i])
 	{
 		env->var[i] = env->var[i + 1];
-		i++;
 	}
+}
+
+void	ft_export_utils(t_environement *env, char *name)
+{
+	char	*frag;
+	int		i;
+
+	i = 0;
+	while (name[i] != '=')
+		i++;
+	frag = ft_calloc(++i, sizeof(char));
+	ft_strlcpy(frag, name, i);
+	built_in_unset(env, frag);
+	free (frag);
 }

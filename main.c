@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 13:43:14 by chajjar           #+#    #+#             */
-/*   Updated: 2022/07/07 15:43:04 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/19 09:10:02 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	main(int argc, char **argv, char **envp)
 	char			*buffer;
 	t_environement	env;
 
-	ft_define_env_var(&env, envp);
 	env.var = envp;
 	(void)argc;
 	(void)argv;
