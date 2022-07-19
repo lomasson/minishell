@@ -19,8 +19,7 @@ int	main(int argc, char **argv, char **envp)
 	t_environement	env;
 
 	env.var = envp;
-	(void)argc;
-	(void)argv;
+	env.last = 0;
 	while (1)
 	{
 		buffer = readline("\033[32mMINISHELL $> \033[0m");
@@ -28,11 +27,13 @@ int	main(int argc, char **argv, char **envp)
 			return (0);
 		add_history(buffer);
 		root = arbre_decison_tree(creat_node(buffer, 0));
-		if (globale_verif(root))
+		if (globale_verif(root, &env))
 			root = exec_all_command(root, &env);
 		else
 			ft_printf("parsing error retry\n");
 		del_arbre_binaire(root);
 	}
+	(void)argc;
+	(void)argv;
 	(void)env;
 }

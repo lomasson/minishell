@@ -12,37 +12,44 @@
 
 #include "minishell.h"
 
-char	*ft_strjoin_get(char *s1, char *s2)
+static char	*find_var(char **env, char *key)
 {
+	char	*found;
+	char	*search;
 	size_t	i;
-	size_t	len1;
-	char	*str;
+	size_t	y;
 
-	if (s1 && s2)
-	{
-		len1 = ft_strlen(s1);
-		str = (char *)malloc(sizeof(char) * (len1 + ft_strlen(s2) + 1));
-		if (str == NULL)
-			return (NULL);
-		i = -1;
-		while (s1[++i])
-			str[i] = s1[i];
-		i = -1;
-		while (s2[++i])
-		{
-			str[len1] = s2[i];
-			len1++;
-		}
-		str[len1] = '\0';
-		free(s1);
-		free(s2);
-		return (str);
-	}
-	return (NULL);
+	y = 0;
+	i = 0;
+	found = NULL;
+	while (key && ft_isalnum(key[y]))
+		y++;
+	if (y)
+		search = ft_substr(key, 0, y);
+	while (y && !found && env[i])
+		found = ft_strnstr(env[i++], search, y);
+	if (!found)
+		return (ft_strdup(""));
+	return (ft_substr(found, y + 2, ft_strlen(found) - y));
 }
 
-//replace variable d'env avec placeholder pour $
-char	*parse_iter(char *str, int *quote)
+static char *parse_env(char *ptr, char *str, int *i, t_env *env)
+{
+	if (str[*i + 1] && str[*i + 1] == '?')
+	{
+		ptr = ft_strjoin_get(ptr, ft_itoa(env->last));
+		(*i) += 2;
+	}
+	else
+	{
+		ptr = ft_strjoin_get(ptr, find_var(env->var, &str[++(*i)]));
+		while (str[*i] && ft_isalnum(str[*i]))
+			(*i)++;
+	}
+	return (ptr);
+}
+
+char	*parse_iter(char *str, int *quote, t_env *env)
 {
 	char	*ptr;
 	int		len;
@@ -59,7 +66,7 @@ char	*parse_iter(char *str, int *quote)
 		ptr = ft_strjoin_get(ptr, ft_substr(str, i, len));
 		check_quote(str[len + i], quote);
 		if (*quote != 1 && str[len + i] == '$')
-			ptr = ft_strjoin_get(ptr, ft_strdup("%PLACEHOLDER%"));
+			ptr = parse_env(ptr, &str[len], &i, env);
 		if (str[len + i] == '\'' || str[len + i] == '\"' || str[len + i] == '$')
 			len++;
 		i += len;
@@ -67,7 +74,7 @@ char	*parse_iter(char *str, int *quote)
 	return (ptr);
 }
 
-int	parse_argument(t_binbash *node)
+int	parse_argument(t_binbash *node, t_env *env)
 {
 	char	**str;
 	int		quote;
@@ -78,7 +85,7 @@ int	parse_argument(t_binbash *node)
 	str = (char **)node->content;
 	while (str[i])
 	{
-		str[i] = parse_iter(str[i], &quote);
+		str[i] = parse_iter(str[i], &quote, env);
 		node->content = (void *) str;
 		if (quote != 0)
 			return (1);
@@ -87,7 +94,7 @@ int	parse_argument(t_binbash *node)
 	return (0);
 }
 
-int	globale_verif(t_binbash *node)
+int	globale_verif(t_binbash *node, t_env *env)
 {
 	if (!node)
 		return (1);
@@ -96,9 +103,9 @@ int	globale_verif(t_binbash *node)
 		|| (node->right && !node->right->type \
 		&& (!node->right->content || !*(char **) node->right->content))))
 		return (0);
-	if (!node->type && parse_argument(node))
+	if (!node->type && parse_argument(node, env))
 		return (0);
-	if (!globale_verif(node->left) || !globale_verif(node->right))
+	if (!globale_verif(node->left, env) || !globale_verif(node->right, env))
 		return (0);
 	return (1);
 }

@@ -38,8 +38,11 @@ typedef struct s_binbash
 
 typedef struct s_environement
 {
-	char	**var;
+	char			**var;
+	unsigned char	last;
 }	t_environement;
+
+typedef struct s_environement	t_env;
 
 int			check_condition(char *str);
 int			check_pipe(char *str);
@@ -54,10 +57,10 @@ t_binbash	*arbre_decison_tree(t_binbash *node);
 void		del_arbre_binaire(t_binbash *root);
 void		display_args(char **args);
 void		display_tree(t_binbash *node, int depth);
-int			globale_verif(t_binbash *node);
+int			globale_verif(t_binbash *node, t_env *env);
 char		*ft_strjoin_get(char *s1, char *s2);
-char		*parse_iter(char *str, int *quote);
-int			parse_argument(t_binbash *node);
+char		*parse_iter(char *str, int *quote, t_env *env);
+int			parse_argument(t_binbash *node, t_env *env);
 void		exec_cmd(char **command, int fd_in,
 				int fd_out, t_environement *env);
 t_binbash	*exec_all_command(t_binbash *root, t_environement *env);
