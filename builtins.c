@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/19 13:09:10 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/19 13:33:30 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,10 @@ void	built_in_unset(t_environement *env, char *name)
 	while (env->var[++i])
 		if (ft_strncmp(env->var[i], name, ft_strlen(name)) == 0)
 			break ;
-	while (env->var[++i])
+	while (env->var[i])
 	{
 		env->var[i] = env->var[i + 1];
+		i++;
 	}
 }
 
