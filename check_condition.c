@@ -34,10 +34,10 @@ int	check_redirection(char *str)
 {
 	if (!str)
 		return (0);
-	else if (!ft_strncmp(str, "<", 1) || !ft_strncmp(str, ">", 1))
-		return (1);
 	else if (!ft_strncmp(str, "<<", 2) || !ft_strncmp(str, ">>", 2))
 		return (2);
+	else if (!ft_strncmp(str, "<", 1) || !ft_strncmp(str, ">", 1))
+		return (1);
 	return (0);
 }
 

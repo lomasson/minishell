@@ -12,6 +12,16 @@
 
 #include "minishell.h"
 
+static void	sigint_handler(int signal)
+{
+	if (signal == SIGINT)
+	{
+		rl_on_new_line();
+		//rl_replace_line();
+		rl_redisplay();
+	}
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_binbash		*root;
@@ -20,6 +30,8 @@ int	main(int argc, char **argv, char **envp)
 
 	env.var = envp;
 	env.last = 0;
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, sigint_handler);
 	while (1)
 	{
 		buffer = readline("\033[32mMINISHELL $> \033[0m");
@@ -27,6 +39,7 @@ int	main(int argc, char **argv, char **envp)
 			return (0);
 		add_history(buffer);
 		root = arbre_decison_tree(creat_node(buffer, 0));
+		display_tree(root, 0);
 		if (globale_verif(root, &env))
 			root = exec_all_command(root, &env);
 		else
@@ -35,5 +48,4 @@ int	main(int argc, char **argv, char **envp)
 	}
 	(void)argc;
 	(void)argv;
-	(void)env;
 }
