@@ -27,6 +27,8 @@
 # include <stdbool.h>
 # include <signal.h>
 
+# define SET_SPACE " \n\t\v\r\f"
+
 typedef struct s_binbash
 {
 	int					type;

@@ -58,6 +58,45 @@ char	*occurent(char *str, int (*condition)(char *))
 	return (NULL);
 }
 
+static char	*ft_strnotset(char *str, char *set)
+{
+	int		i;
+	int		y;
+
+	while (str && set)
+	{
+		i = 0;
+		y = 0;
+		while (set[i] == *str)
+			if (*str == set[i++])
+				y = 1;
+		if (!y)
+			return (str);
+		str++;
+	}
+	return (str);
+}
+
+static char	**special_redirection(char **element, char *str)
+{
+	char	**tmp;
+	int		i;
+
+	tmp = ft_split_arg(str);
+	if (!tmp)
+		return (element);
+	i = 1;
+	element[2] = tmp[0];
+	while (tmp[0] && tmp[i])
+		free(tmp[i++]);
+	free(tmp);
+	if (!element[2])
+		return (element);
+	element[0] = ft_substr(str, ft_strlen(element[2]) + (ft_strlen(str) - \
+		ft_strlen(ft_strnotset(str, SET_SPACE))), ft_strlen(str));
+	return (element);
+}
+
 static char	**ft_alloc_element(
 	char **element, char *str, int (*condition)(char *))
 {
@@ -68,7 +107,7 @@ static char	**ft_alloc_element(
 	if (occurent(str, condition))
 		len2 = ft_strlen(occurent(str, condition));
 	len = ft_strlen(str) - len2;
-	if (len)
+	if (ft_strnotset(str, SET_SPACE) != &str[len])
 	{
 		element[0] = ft_calloc(len, sizeof(char));
 		ft_strlcpy(element[0], str, len + 1);
@@ -78,7 +117,11 @@ static char	**ft_alloc_element(
 		element[1] = ft_calloc(condition(&str[len]), sizeof(char));
 		ft_strlcpy(element[1], &str[len], condition(&str[len]) + 1);
 	}
-	if (len2)
+	if (len2 && ft_strnotset(str, SET_SPACE) == &str[len]
+		&& (ft_strncmp(&str[len], "<", 1) || ft_strncmp(&str[len], ">", 1)))
+		element = special_redirection( \
+		element, &str[len] + condition(&str[len]));
+	else if (len2)
 	{
 		element[2] = ft_calloc(len2, sizeof(char));
 		ft_strlcpy(element[2], &str[len + condition(&str[len])], len2 + 1);
