@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/19 12:43:17 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/25 22:54:15 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ typedef struct s_environement
 	unsigned char	last;
 }	t_environement;
 
-typedef struct s_environement	t_env;
-
 int			check_condition(char *str);
 int			check_pipe(char *str);
 int			check_redirection(char *str);
@@ -59,14 +57,15 @@ t_binbash	*arbre_decison_tree(t_binbash *node);
 void		del_arbre_binaire(t_binbash *root);
 void		display_args(char **args);
 void		display_tree(t_binbash *node, int depth);
-int			globale_verif(t_binbash *node, t_env *env);
+int			globale_verif(t_binbash *node, t_environement *env);
 char		*ft_strjoin_get(char *s1, char *s2);
-char		*parse_iter(char *str, int *quote, t_env *env);
-int			parse_argument(t_binbash *node, t_env *env);
-void		exec_cmd(char **command, int fd_in,
+char		*parse_iter(char *str, int *quote, t_environement*env);
+int			parse_argument(t_binbash *node, t_environement *env);
+int			exec_cmd(char **command, int fd_in,
 				int fd_out, t_environement *env);
 t_binbash	*exec_all_command(t_binbash *root, t_environement *env);
 char		*parsing_access_test(char **path, char **cmd_splited);
+
 void		ft_exec_built_in(char **cmd_splited,
 				int fd_entry, int *fds, t_environement *env);
 bool		ft_is_built_in(char *command);
@@ -82,4 +81,9 @@ void		ft_tabjoin(t_environement *env, char *src);
 int			ft_pipe(t_binbash *root,
 				t_environement *env, int *fd_in, int *fd_out);
 void		ft_export_utils(t_environement *env, char *name);
+int			gestion_pipe(t_binbash *root, t_environement *env, int fd_entry);
+int			gestion_heredoc(char *arg_stop);
+int			ft_exit(char **state_tab, t_environement *env);
+char		**output_redirection(int *out_gestion, t_binbash *root,
+				char **state_tab, int *fd_out);
 #endif

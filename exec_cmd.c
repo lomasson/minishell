@@ -16,17 +16,19 @@
 , fd_in is the input and fd_out is the output.
 exec_cmd take the input for execut the command and 
 redirect to output*/
-void	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
+int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 {
 	int		pid;
 	char	*path;
+	int		status;
 
+	status = 0;
 	pid = fork();
 	if (!pid)
 	{
 		path = parsing_core(cmd[0], env->var);
 		if (!path)
-			return ;
+			exit (-1);
 		if (fd_in != 0)
 		{
 			dup2(fd_in, STDIN_FILENO);
@@ -38,13 +40,22 @@ void	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 			close(fd_out);
 		}
 		if (execve(path, cmd, NULL) == -1)
-			perror("shell");
+		{
+			close(fd_in);
+			close(fd_out);
+			exit(errno);
+		}
 		close(fd_in);
 		close(fd_out);
 		exit(EXIT_FAILURE);
 	}
 	else
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &status, 0);
+	if (status == 32256 || status == 32512)
+		env->last /= 256;
+	else
+		env->last = !!status;
+	return (1);
 }
 
 // fd[1] = out
@@ -57,8 +68,6 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 	int		out_gestion;
 	char	**state_tab;
 	char	**state_tmp;
-	int		pipe_e[2];
-	int		parent;
 
 	out_gestion = 0;
 	if (root->type == 0)
@@ -79,40 +88,24 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 	{
 		if (ft_strcmp(state_tab[0], "|") == 0)
 		{
-			fd[0] = fd_entry;
-			state_tab = (char **)root->left->content;
-			out_gestion = 2;
-			pipe (pipe_e);
-			parent = fork();
-			if (!parent)
-			{
-				if (state_tab[1])
-					state_tab[0] = ft_strjoin(
-							ft_strjoin(state_tab[0], " "), state_tab[1]);
-				child_procces(fd[0], pipe_e, state_tab[0],
-					parsing_core(state_tab[0], env->var));
-				ft_putstr_fd("je passe ici\n", STDERR_FILENO);
-				exit(EXIT_FAILURE);
-			}
-			else
-				waitpid(parent, NULL, 0);
-			close(pipe_e[1]);
-			//close(pipe_e[0]);
-			//close(fd[1]);
+			fd_entry = gestion_pipe(root, env, fd[0]);
 			root = root->right;
 			if (root->type == 0)
+			{
+				out_gestion = 1;
 				state_tab = (char **)root->content;
+			}
 			else
 			{
+				out_gestion = 2;
 				state_tab[0] = (char *)root->content;
 				state_tab[1] = NULL;
 			}
-			fd_entry = pipe_e[0];
 		}
-		else if (ft_strcmp(state_tab[0], "||") == 0)
+		/*else if (ft_strcmp(state_tab[0], "||") == 0)
 			ft_printf("not work\n");
 		else if (ft_strcmp(state_tab[0], "&&") == 0)
-			ft_printf("not work\n");
+			ft_printf("not work\n");*/
 		else if (ft_strcmp(state_tab[0], "<") == 0)
 		{
 			out_gestion = 1;
@@ -121,49 +114,116 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 			else
 				state_tmp = (char **)root->right->left->content;
 			fd_entry = open(state_tmp[0], O_RDWR);
-			state_tmp = (char **)root->left->content;
-			state_tab[0] = state_tmp[0];
+			state_tab = (char **)root->left->content;
 		}
-		else if (ft_strcmp(state_tab[0], ">") == 0)
+		else if (ft_strcmp(state_tab[0], ">>") == 0
+			|| ft_strcmp(state_tab[0], ">") == 0)
+			state_tab = output_redirection(&out_gestion,
+					root, state_tab, &fd[1]);
+		else if (ft_strcmp(state_tab[0], "<<") == 0)
 		{
 			out_gestion = 1;
 			if (root->right->type == 0)
 				state_tmp = (char **)root->right->content;
 			else
 				state_tmp = (char **)root->right->left->content;
-			fd[1] = open(state_tmp[0],
-					O_RDWR | O_CREAT | O_TRUNC, 0777);
-				state_tmp = (char **)root->left->content;
-			state_tab = state_tmp;
+			fd_entry = gestion_heredoc(state_tmp[0]);
+			root = root->right;
 		}
-		else if (ft_strcmp(state_tab[0], ">>") == 0)
-		{
-			out_gestion = 1;
-			fd[1] = open(*(char **)root->right->content,
-					O_CREAT | O_APPEND, 0777);
-		}
-		else if (ft_strcmp(state_tab[0], "<<") == 0)
-			ft_printf("not work\n");
 		if (out_gestion != 1)
 			fd[1] = STDOUT_FILENO;
 		if (ft_is_built_in(state_tab[0]))
 			ft_exec_built_in(state_tab, fd_entry, fd, env);
-		else if (state_tab && out_gestion != 2 )
+		else if (state_tab && out_gestion != 2)
 			exec_cmd(state_tab, fd_entry, fd[1], env);
-		if (out_gestion == 2)
-			fd_entry = fd[0];
 		if (!root->right && !root->left)
 			break ;
-		if (root->right)
-			root = root->right;
-		if (root->type == 0)
-			state_tab = (char **)root->content;
+		if (out_gestion == 2)
+			fd[0] = fd_entry;
 		else
 		{
-			state_tab[0] = (char *)root->content;
-			state_tab[1] = NULL;
+			if (root->right)
+				root = root->right;
+			if (root->type == 0)
+				state_tab = (char **)root->content;
+			else
+			{
+				state_tab[0] = (char *)root->content;
+				state_tab[1] = NULL;
+			}
 		}
 		out_gestion = 0;
 	}
 	return (root);
+}
+
+int	gestion_pipe(t_binbash *root, t_environement *env, int fd_entry)
+{
+	int		pipe_e[2];
+	int		parent;
+	char	**state_tab;
+	int		i;
+	int		status;
+
+	status = 0;
+	pipe (pipe_e);
+	parent = fork();
+	if (!parent)
+	{
+		state_tab = (char **)root->left->content;
+		if (state_tab[1])
+			state_tab[0] = ft_strjoin(
+					ft_strjoin(state_tab[0], " "), state_tab[1]);
+		child_procces(fd_entry, pipe_e, state_tab[0],
+			parsing_core(state_tab[0], env->var));
+		i = -1;
+		while (state_tab[++i])
+			free (state_tab[i]);
+		free (state_tab);
+		exit(EXIT_FAILURE);
+	}
+	else
+		waitpid(parent, NULL, 0);
+	close(pipe_e[1]);
+	if (status == 32256 || status == 32512)
+		env->last /= 256;
+	else
+		env->last = !!status;
+	return (pipe_e[0]);
+}
+
+int	gestion_heredoc(char *arg_stop)
+{
+	int		fd;
+	char	*str;
+
+	fd = open("/tmp/heredoc", O_CREAT | O_RDWR | O_TRUNC, 0666);
+	while (1)
+	{
+		str = readline("\033[32mheredoc> \033[0m");
+		if (ft_strcmp(str, arg_stop) == 0)
+			break ;
+		ft_putstr_fd(str, fd);
+		ft_putchar_fd('\n', fd);
+	}
+	return (fd);
+}
+
+char	**output_redirection(int *out_gestion, t_binbash *root,
+			char **state_tab, int *fd_out)
+{
+	char	**state_tmp;
+
+	if (root->right->type == 0)
+		state_tmp = (char **)root->right->content;
+	else
+		state_tmp = (char **)root->right->left->content;
+	if (ft_strcmp(state_tab[0], ">") == 0)
+		fd_out[0] = open(state_tmp[0],
+				O_RDWR | O_CREAT | O_TRUNC, 0777);
+	else if (ft_strcmp(state_tab[0], ">>") == 0)
+		fd_out[0] = open(state_tmp[0],
+				O_CREAT | O_APPEND | O_RDWR, 0777);
+	out_gestion[0] = 1;
+	return ((char **)root->left->content);
 }

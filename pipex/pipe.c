@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 16:11:07 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/08 19:32:29 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/25 10:40:44 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ void	child_procces(int file, int *pipe, char *cmd, char *path)
 {
 	char	**arg;
 	int		i;
+	int		err;
 
+	err = 0;
 	arg = ft_split(cmd, ' ');
 	dup2(file, STDIN_FILENO);
 	dup2(pipe[1], STDOUT_FILENO);
@@ -65,7 +67,7 @@ void	child_procces(int file, int *pipe, char *cmd, char *path)
 	close(pipe[1]);
 	close(file);
 	if (path)
-		execve(path, arg, NULL);
+		err = execve(path, arg, NULL);
 	close(pipe[0]);
 	close(pipe[1]);
 	close(file);

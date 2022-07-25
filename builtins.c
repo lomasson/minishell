@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/19 13:33:30 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/25 19:36:50 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	ft_exec_built_in(char **cmd_splited,
 	else if (ft_strcmp(cmd_splited[0], "unset") == 0)
 		built_in_unset(env, cmd_splited[1]);
 	else if (ft_strcmp(cmd_splited[0], "exit") == 0)
-		exit(1);
+		ft_exit(cmd_splited, env);
 }
 
 /* Check if command informed in param is a built-in*/
@@ -88,11 +88,11 @@ void	built_in_export(t_environement *env, char *name)
 	while (name[egal] != '=')
 		egal++;
 	while (env->var[++i])
-		if (ft_strncmp(env->var[i], name, ++egal) == 0)
+		if (ft_strncmp(env->var[i], name, egal) == 0)
 			j = i;
 	dest = (char **)malloc(sizeof(char **) * ++i);
-	//if (j >= 0)
-	//	ft_export_utils(env, name);
+	if (j >= 0)
+		ft_export_utils(env, name);
 	i = -1;
 	while (env->var[++i])
 		dest[i] = env->var[i];
@@ -128,4 +128,33 @@ void	ft_export_utils(t_environement *env, char *name)
 	ft_strlcpy(frag, name, i);
 	built_in_unset(env, frag);
 	free (frag);
+}
+
+int	ft_exit(char **state_tab, t_environement *env)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (state_tab[++i])
+	{
+		j = -1;
+		while (state_tab[i][++j])
+		{
+			if (!((state_tab[i][j] <= '9' && state_tab[i][j] >= '0')
+				|| state_tab[i][j] >= ' '))
+			{
+				ft_printf("exit: %s: numeric argument required\n", state_tab[i]);
+				env->last = 1;
+				return (1);
+			}
+		}
+	}
+	if (i > 2)
+	{
+		ft_printf("exit: too many arguments\n");
+		env->last = 1;
+		return (1);
+	}
+	exit(env->last);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   verif_commande.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 14:50:51 by chajjar           #+#    #+#             */
-/*   Updated: 2022/07/03 22:37:50 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/07/25 15:26:47 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static char	*find_var(char **env, char *key)
 	return (ft_substr(found, y + 2, ft_strlen(found) - y));
 }
 
-static char *parse_env(char *ptr, char *str, int *i, t_env *env)
+static char	*parse_env(char *ptr, char *str, int *i, t_environement *env)
 {
 	if (str[*i + 1] && str[*i + 1] == '?')
 	{
@@ -49,7 +49,7 @@ static char *parse_env(char *ptr, char *str, int *i, t_env *env)
 	return (ptr);
 }
 
-char	*parse_iter(char *str, int *quote, t_env *env)
+char	*parse_iter(char *str, int *quote, t_environement *env)
 {
 	char	*ptr;
 	int		len;
@@ -74,7 +74,7 @@ char	*parse_iter(char *str, int *quote, t_env *env)
 	return (ptr);
 }
 
-int	parse_argument(t_binbash *node, t_env *env)
+int	parse_argument(t_binbash *node, t_environement *env)
 {
 	char	**str;
 	int		quote;
@@ -94,7 +94,7 @@ int	parse_argument(t_binbash *node, t_env *env)
 	return (0);
 }
 
-int	globale_verif(t_binbash *node, t_env *env)
+int	globale_verif(t_binbash *node, t_environement *env)
 {
 	if (!node)
 		return (1);
