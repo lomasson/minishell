@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/25 22:54:15 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/27 12:17:39 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,14 @@ typedef struct s_environement
 	unsigned char	last;
 }	t_environement;
 
+typedef struct s_exec_gestion
+{
+	char	**state_tab;
+	int		fd[2];
+	int		fd_entry;
+	int		out_gestion;
+}	t_exec_gestion;
+
 int			check_condition(char *str);
 int			check_pipe(char *str);
 int			check_redirection(char *str);
@@ -59,7 +67,7 @@ void		display_args(char **args);
 void		display_tree(t_binbash *node, int depth);
 int			globale_verif(t_binbash *node, t_environement *env);
 char		*ft_strjoin_get(char *s1, char *s2);
-char		*parse_iter(char *str, int *quote, t_environement*env);
+char		*parse_iter(char *str, int *quote, t_environement *env);
 int			parse_argument(t_binbash *node, t_environement *env);
 int			exec_cmd(char **command, int fd_in,
 				int fd_out, t_environement *env);
@@ -86,4 +94,14 @@ int			gestion_heredoc(char *arg_stop);
 int			ft_exit(char **state_tab, t_environement *env);
 char		**output_redirection(int *out_gestion, t_binbash *root,
 				char **state_tab, int *fd_out);
+void		ft_exec_all_command_part_two(t_exec_gestion *exec,
+				t_environement *env, t_binbash *root);
+void		exec_struct_initer(t_binbash *root, t_exec_gestion *exec);
+void		ft_pipe_exec(t_exec_gestion *exec,
+				t_environement *env, t_binbash *root);
+char		**input_redirection(int *out_gestion, t_binbash *root,
+				char **state_tab, int *fd_entry);
+int			ft_interation_gestion(t_exec_gestion *exec,
+				t_environement *env, t_binbash *root);
+void		ft_find_error_numbers(t_environement *env, int status);
 #endif
