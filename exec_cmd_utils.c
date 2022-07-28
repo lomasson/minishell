@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/28 18:37:18 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 18:59:49 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,8 @@ void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
 	if (root->right->type == 0)
 	{
 		state_tab = (char **)root->right->content;
-		exec->fd[1] = STDOUT_FILENO;
+		pipe(exec->fd);
+		exec->fd_entry = exec->fd[0];
 	}
 	else
 	{
@@ -153,7 +154,7 @@ void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
 	state_tmp[1] = "/tmp/heredoc";
 	state_tmp[2] = NULL;
 	exec->out_gestion = 3;
-	exec->fd_entry = gestion_heredoc(state_tab[0]);
+	gestion_heredoc(state_tab[0]);
 	exec_cmd(state_tmp, STDIN_FILENO, exec->fd[1], env);
-	*root = *root->right->right;
+	*root = *root->right;
 }
