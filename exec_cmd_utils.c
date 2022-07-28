@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/28 13:49:18 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 18:37:18 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	gestion_heredoc(char *arg_stop)
 	int		fd;
 	char	*str;
 
-	fd = open("heredoc", O_CREAT | O_RDWR | O_TRUNC, 0666);
+	fd = open("/tmp/heredoc", O_CREAT | O_RDWR | O_TRUNC, 0666);
 	while (1)
 	{
 		str = readline("\033[32mheredoc> \033[0m");
@@ -55,13 +55,6 @@ int	gestion_heredoc(char *arg_stop)
 		ft_putchar_fd('\n', fd);
 	}
 	lseek(fd, 0, SEEK_SET);
-	str = get_next_line(fd);
-	while (str)
-	{
-		ft_putstr_fd(str, STDOUT_FILENO);
-		str = get_next_line(fd);
-	}
-	free (str);
 	return (fd);
 }
 
@@ -84,10 +77,10 @@ char	**output_redirection(int *out_gestion, t_binbash *root,
 	return ((char **)root->left->content);
 }
 
-char	**input_redirection(int *out_gestion, t_binbash *root,
+char	**input_redirection(t_environement *env, t_binbash *root,
 			char **state_tab, t_exec_gestion *exec)
 {
-	out_gestion[0] = 1;
+	exec->out_gestion = 1;
 	if (ft_strcmp(state_tab[0], "<") == 0)
 	{
 		if (root->right->type == 0)
@@ -98,20 +91,7 @@ char	**input_redirection(int *out_gestion, t_binbash *root,
 		state_tab = (char **)root->left->content;
 	}
 	if (ft_strcmp(state_tab[0], "<<") == 0)
-	{
-		if (root->right->type == 0)
-			state_tab = (char **)root->right->content;
-		else
-		{
-			state_tab[0] = (char *)root->right->content;
-			output_redirection(&exec->out_gestion,
-				root, exec->state_tab, &exec->fd[1]);
-			state_tab = (char **)root->right->left->content;
-		}
-		out_gestion[0] = 3;
-		exec->fd_entry = gestion_heredoc(state_tab[0]);
-		state_tab = (char **)root->content;
-	}
+		ft_heredoc(root, exec, env);
 	return (state_tab);
 }
 
@@ -147,4 +127,33 @@ void	ft_find_error_numbers(t_environement *env, int status)
 		env->last /= 256;
 	else
 		env->last = !!status;
+}
+
+void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
+{
+	char	**state_tab;
+	char	**state_tmp;
+
+	state_tab = exec->state_tab;
+	state_tmp = exec->state_tab;
+	if (root->right->type == 0)
+	{
+		state_tab = (char **)root->right->content;
+		exec->fd[1] = STDOUT_FILENO;
+	}
+	else
+	{
+		state_tab[0] = (char *)root->right->content;
+		state_tab[1] = NULL;
+		output_redirection(&exec->out_gestion,
+			root->right, state_tab, &exec->fd[1]);
+		state_tab = (char **)root->right->left->content;
+	}
+	state_tmp = (char **)root->left->content;
+	state_tmp[1] = "/tmp/heredoc";
+	state_tmp[2] = NULL;
+	exec->out_gestion = 3;
+	exec->fd_entry = gestion_heredoc(state_tab[0]);
+	exec_cmd(state_tmp, STDIN_FILENO, exec->fd[1], env);
+	*root = *root->right->right;
 }

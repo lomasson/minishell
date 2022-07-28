@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:30:40 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/28 13:44:58 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 18:14:01 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 		}
 		if (execve(path, cmd, NULL) == -1)
 		{
+			printf("la commeande est en erreur\n");
 			close(fd_in);
 			close(fd_out);
 			exit(errno);
@@ -89,7 +90,7 @@ void	ft_exec_all_command_part_two(t_exec_gestion *exec,
 				root, exec->state_tab, &exec->fd[1]);
 	else if (ft_strcmp(exec->state_tab[0], "<<") == 0
 		|| ft_strcmp(exec->state_tab[0], "<") == 0)
-		exec->state_tab = input_redirection(&exec->out_gestion, root,
+		exec->state_tab = input_redirection(env, root,
 				exec->state_tab, exec);
 }
 
@@ -99,9 +100,10 @@ void	exec_struct_initer(t_binbash *root, t_exec_gestion *exec)
 		exec->state_tab = (char **)root->content;
 	else
 	{
-		exec->state_tab = (char **)malloc(sizeof(char) * 2);
+		exec->state_tab = (char **)malloc(sizeof(char) * 3);
 		exec->state_tab[0] = (char *)root->content;
 		exec->state_tab[1] = NULL;
+		exec->state_tab[2] = NULL;
 	}
 	exec->fd[1] = 1;
 	exec->fd[0] = 0;
