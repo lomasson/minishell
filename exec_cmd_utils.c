@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/28 11:36:55 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 13:49:18 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,13 @@ int	gestion_pipe(t_binbash *root, t_environement *env, int fd_entry)
 {
 	int		pipe_e[2];
 	int		parent;
-	//char	**state_tab;
 	int		status;
 
 	status = 0;
-	//state_tab = NULL;
 	pipe (pipe_e);
 	parent = fork();
 	if (!parent)
 	{
-		/*state_tab = (char **)root->left->content;
-		if (state_tab[1])
-			state_tab[0] = ft_strjoin(
-					ft_strjoin(state_tab[0], " "), state_tab[1]);
-		child_procces(fd_entry, pipe_e, state_tab[0],
-			parsing_core(state_tab[0], env->var));*/
 		dup2(fd_entry, STDIN_FILENO);
 		dup2(pipe_e[1], STDOUT_FILENO);
 		close(pipe_e[0]);
@@ -93,23 +85,32 @@ char	**output_redirection(int *out_gestion, t_binbash *root,
 }
 
 char	**input_redirection(int *out_gestion, t_binbash *root,
-			char **state_tab, int *fd_entry)
+			char **state_tab, t_exec_gestion *exec)
 {
 	out_gestion[0] = 1;
 	if (ft_strcmp(state_tab[0], "<") == 0)
 	{
-		state_tab = (char **)root->left->content;
-		fd_entry[0] = open(state_tab[0], O_RDWR);
 		if (root->right->type == 0)
 			state_tab = (char **)root->right->content;
 		else
 			state_tab = (char **)root->right->left->content;
+		exec->fd_entry = open(state_tab[0], O_RDWR);
+		state_tab = (char **)root->left->content;
 	}
 	if (ft_strcmp(state_tab[0], "<<") == 0)
 	{
-		state_tab = (char **)root->left->content;
+		if (root->right->type == 0)
+			state_tab = (char **)root->right->content;
+		else
+		{
+			state_tab[0] = (char *)root->right->content;
+			output_redirection(&exec->out_gestion,
+				root, exec->state_tab, &exec->fd[1]);
+			state_tab = (char **)root->right->left->content;
+		}
 		out_gestion[0] = 3;
-		fd_entry[0] = gestion_heredoc(state_tab[0]);
+		exec->fd_entry = gestion_heredoc(state_tab[0]);
+		state_tab = (char **)root->content;
 	}
 	return (state_tab);
 }

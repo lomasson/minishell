@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/27 12:17:39 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 13:41:11 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void		exec_struct_initer(t_binbash *root, t_exec_gestion *exec);
 void		ft_pipe_exec(t_exec_gestion *exec,
 				t_environement *env, t_binbash *root);
 char		**input_redirection(int *out_gestion, t_binbash *root,
-				char **state_tab, int *fd_entry);
+				char **state_tab, t_exec_gestion *exec);
 int			ft_interation_gestion(t_exec_gestion *exec,
 				t_environement *env, t_binbash *root);
 void		ft_find_error_numbers(t_environement *env, int status);

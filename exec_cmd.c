@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:30:40 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/28 11:38:01 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 13:44:58 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	ft_exec_all_command_part_two(t_exec_gestion *exec,
 	else if (ft_strcmp(exec->state_tab[0], "<<") == 0
 		|| ft_strcmp(exec->state_tab[0], "<") == 0)
 		exec->state_tab = input_redirection(&exec->out_gestion, root,
-				exec->state_tab, &exec->fd_entry);
+				exec->state_tab, exec);
 }
 
 void	exec_struct_initer(t_binbash *root, t_exec_gestion *exec)
