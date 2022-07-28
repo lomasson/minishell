@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:30:40 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/27 13:37:14 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 11:38:01 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 	}
 	else
 		waitpid(pid, &status, 0);
-	if (status == 32256 || status == 32512)
-		env->last /= 256;
-	else
-		env->last = !!status;
+	ft_find_error_numbers(env, status);
 	return (1);
 }
 
@@ -70,7 +67,7 @@ t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 	{
 		env->last = 0;
 		ft_exec_all_command_part_two(&exec, env, root);
-		if (exec.out_gestion != 1)
+		if (exec.out_gestion != 1 && exec.out_gestion != 2)
 			exec.fd[1] = STDOUT_FILENO;
 		if (ft_interation_gestion(&exec, env, root) == 0)
 			break ;
@@ -83,7 +80,9 @@ void	ft_exec_all_command_part_two(t_exec_gestion *exec,
 {
 	exec->out_gestion = 0;
 	if (ft_strcmp(exec->state_tab[0], "|") == 0)
+	{
 		ft_pipe_exec(exec, env, root);
+	}
 	else if (ft_strcmp(exec->state_tab[0], ">>") == 0
 		|| ft_strcmp(exec->state_tab[0], ">") == 0)
 		exec->state_tab = output_redirection(&exec->out_gestion,
@@ -113,7 +112,7 @@ void	ft_pipe_exec(t_exec_gestion *exec,
 	t_environement *env, t_binbash *root)
 {
 	exec->fd_entry = gestion_pipe(root, env, exec->fd[0]);
-	root = root->right;
+	*root = *root->right;
 	if (root->type == 0)
 	{
 		exec->out_gestion = 1;

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/27 13:32:35 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/28 11:36:55 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,29 @@ int	gestion_pipe(t_binbash *root, t_environement *env, int fd_entry)
 {
 	int		pipe_e[2];
 	int		parent;
-	char	**state_tab;
+	//char	**state_tab;
 	int		status;
 
 	status = 0;
-	state_tab = NULL;
+	//state_tab = NULL;
 	pipe (pipe_e);
 	parent = fork();
 	if (!parent)
 	{
-		state_tab = (char **)root->left->content;
+		/*state_tab = (char **)root->left->content;
 		if (state_tab[1])
 			state_tab[0] = ft_strjoin(
 					ft_strjoin(state_tab[0], " "), state_tab[1]);
 		child_procces(fd_entry, pipe_e, state_tab[0],
-			parsing_core(state_tab[0], env->var));
+			parsing_core(state_tab[0], env->var));*/
+		dup2(fd_entry, STDIN_FILENO);
+		dup2(pipe_e[1], STDOUT_FILENO);
 		close(pipe_e[0]);
+		close(pipe_e[1]);
+		exec_all_command(root->left, env);
+		close(fd_entry);
+		close(pipe_e[0]);
+		close(pipe_e[1]);
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -88,17 +95,15 @@ char	**output_redirection(int *out_gestion, t_binbash *root,
 char	**input_redirection(int *out_gestion, t_binbash *root,
 			char **state_tab, int *fd_entry)
 {
-	char	**state_tmp;
-
 	out_gestion[0] = 1;
 	if (ft_strcmp(state_tab[0], "<") == 0)
 	{
 		state_tab = (char **)root->left->content;
 		fd_entry[0] = open(state_tab[0], O_RDWR);
 		if (root->right->type == 0)
-			state_tmp = (char **)root->right->content;
+			state_tab = (char **)root->right->content;
 		else
-			state_tmp = (char **)root->right->left->content;
+			state_tab = (char **)root->right->left->content;
 	}
 	if (ft_strcmp(state_tab[0], "<<") == 0)
 	{
@@ -116,8 +121,8 @@ int	ft_interation_gestion(t_exec_gestion *exec,
 		ft_exec_built_in(exec->state_tab, exec->fd_entry, exec->fd, env);
 	else if (exec->state_tab && exec->out_gestion != 2)
 		exec_cmd(exec->state_tab, exec->fd_entry, exec->fd[1], env);
-	if (root->right)
-		root = root->right;
+	if (root->right && exec->out_gestion != 2)
+		*root = *root->right;
 	if (!root->right && !root->left)
 		return (0);
 	if (exec->out_gestion == 2)
