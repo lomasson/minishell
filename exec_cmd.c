@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/04 10:02:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/05 14:01:49by lomasson         ###   ########.fr       */
+/*   Created: 2022/07/26 16:30:40 by lomasson          #+#    #+#             */
+/*   Updated: 2022/07/28 18:14:01 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,19 @@
 , fd_in is the input and fd_out is the output.
 exec_cmd take the input for execut the command and 
 redirect to output*/
-void	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
+int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 {
 	int		pid;
 	char	*path;
+	int		status;
 
+	status = 0;
 	pid = fork();
 	if (!pid)
 	{
 		path = parsing_core(cmd[0], env->var);
 		if (!path)
-			return ;
+			exit (-1);
 		if (fd_in != 0)
 		{
 			dup2(fd_in, STDIN_FILENO);
@@ -38,132 +40,90 @@ void	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 			close(fd_out);
 		}
 		if (execve(path, cmd, NULL) == -1)
-			perror("shell");
+		{
+			printf("la commeande est en erreur\n");
+			close(fd_in);
+			close(fd_out);
+			exit(errno);
+		}
 		close(fd_in);
 		close(fd_out);
 		exit(EXIT_FAILURE);
 	}
 	else
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &status, 0);
+	ft_find_error_numbers(env, status);
+	return (1);
 }
 
-// fd[1] = out
-// fd[0] = in
+// exec.fd[1] = out
+// exec.fd[0] = in
 
 t_binbash	*exec_all_command(t_binbash *root, t_environement *env)
 {
-	int		fd[2];
-	int		fd_entry;
-	int		out_gestion;
-	char	**state_tab;
-	char	**state_tmp;
-	int		pipe_e[2];
-	int		parent;
+	t_exec_gestion	exec;
 
-	out_gestion = 0;
-	if (root->type == 0)
-		state_tab = (char **)root->content;
-	else
+	exec_struct_initer(root, &exec);
+	while (exec.state_tab[0])
 	{
-		state_tab = (char **)malloc(sizeof(char) * 2);
-		state_tab[0] = (char *)root->content;
-		state_tab[1] = NULL;
-	}
-	fd[1] = 1;
-	fd[0] = 0;
-	state_tmp = (char **)malloc(sizeof(char) * 2);
-	state_tmp[0] = NULL;
-	state_tmp[1] = NULL;
-	fd_entry = STDIN_FILENO;
-	while (state_tab[0])
-	{
-		if (ft_strcmp(state_tab[0], "|") == 0)
-		{
-			fd[0] = fd_entry;
-			state_tab = (char **)root->left->content;
-			out_gestion = 2;
-			pipe (pipe_e);
-			parent = fork();
-			if (!parent)
-			{
-				if (state_tab[1])
-					state_tab[0] = ft_strjoin(
-							ft_strjoin(state_tab[0], " "), state_tab[1]);
-				child_procces(fd[0], pipe_e, state_tab[0],
-					parsing_core(state_tab[0], env->var));
-				ft_putstr_fd("je passe ici\n", STDERR_FILENO);
-				exit(EXIT_FAILURE);
-			}
-			else
-				waitpid(parent, NULL, 0);
-			close(pipe_e[1]);
-			//close(pipe_e[0]);
-			//close(fd[1]);
-			root = root->right;
-			if (root->type == 0)
-				state_tab = (char **)root->content;
-			else
-			{
-				state_tab[0] = (char *)root->content;
-				state_tab[1] = NULL;
-			}
-			fd_entry = pipe_e[0];
-		}
-		else if (ft_strcmp(state_tab[0], "||") == 0)
-			ft_printf("not work\n");
-		else if (ft_strcmp(state_tab[0], "&&") == 0)
-			ft_printf("not work\n");
-		else if (ft_strcmp(state_tab[0], "<") == 0)
-		{
-			out_gestion = 1;
-			if (root->right->type == 0)
-				state_tmp = (char **)root->right->content;
-			else
-				state_tmp = (char **)root->right->left->content;
-			fd_entry = open(state_tmp[0], O_RDWR);
-			state_tmp = (char **)root->left->content;
-			state_tab[0] = state_tmp[0];
-		}
-		else if (ft_strcmp(state_tab[0], ">") == 0)
-		{
-			out_gestion = 1;
-			if (root->right->type == 0)
-				state_tmp = (char **)root->right->content;
-			else
-				state_tmp = (char **)root->right->left->content;
-			fd[1] = open(state_tmp[0],
-					O_RDWR | O_CREAT | O_TRUNC, 0777);
-				state_tmp = (char **)root->left->content;
-			state_tab = state_tmp;
-		}
-		else if (ft_strcmp(state_tab[0], ">>") == 0)
-		{
-			out_gestion = 1;
-			fd[1] = open(*(char **)root->right->content,
-					O_CREAT | O_APPEND, 0777);
-		}
-		else if (ft_strcmp(state_tab[0], "<<") == 0)
-			ft_printf("not work\n");
-		if (out_gestion != 1)
-			fd[1] = STDOUT_FILENO;
-		if (ft_is_built_in(state_tab[0]))
-			ft_exec_built_in(state_tab, fd_entry, fd, env);
-		else if (state_tab && out_gestion != 2 )
-			exec_cmd(state_tab, fd_entry, fd[1], env);
-		if (out_gestion == 2)
-			fd_entry = fd[0];
-		if (!root->right && !root->left)
+		env->last = 0;
+		ft_exec_all_command_part_two(&exec, env, root);
+		if (exec.out_gestion != 1 && exec.out_gestion != 2)
+			exec.fd[1] = STDOUT_FILENO;
+		if (ft_interation_gestion(&exec, env, root) == 0)
 			break ;
-		if (root->right)
-			root = root->right;
-		if (root->type == 0)
-			state_tab = (char **)root->content;
-		else
-		{
-			state_tab[0] = (char *)root->content;
-			state_tab[1] = NULL;
-		}
-		out_gestion = 0;
 	}
 	return (root);
+}
+
+void	ft_exec_all_command_part_two(t_exec_gestion *exec,
+	t_environement *env, t_binbash *root)
+{
+	exec->out_gestion = 0;
+	if (ft_strcmp(exec->state_tab[0], "|") == 0)
+	{
+		ft_pipe_exec(exec, env, root);
+	}
+	else if (ft_strcmp(exec->state_tab[0], ">>") == 0
+		|| ft_strcmp(exec->state_tab[0], ">") == 0)
+		exec->state_tab = output_redirection(&exec->out_gestion,
+				root, exec->state_tab, &exec->fd[1]);
+	else if (ft_strcmp(exec->state_tab[0], "<<") == 0
+		|| ft_strcmp(exec->state_tab[0], "<") == 0)
+		exec->state_tab = input_redirection(env, root,
+				exec->state_tab, exec);
+}
+
+void	exec_struct_initer(t_binbash *root, t_exec_gestion *exec)
+{
+	if (root->type == 0)
+		exec->state_tab = (char **)root->content;
+	else
+	{
+		exec->state_tab = (char **)malloc(sizeof(char) * 3);
+		exec->state_tab[0] = (char *)root->content;
+		exec->state_tab[1] = NULL;
+		exec->state_tab[2] = NULL;
+	}
+	exec->fd[1] = 1;
+	exec->fd[0] = 0;
+	exec->fd_entry = STDIN_FILENO;
+}
+
+void	ft_pipe_exec(t_exec_gestion *exec,
+	t_environement *env, t_binbash *root)
+{
+	exec->fd_entry = gestion_pipe(root, env, exec->fd[0]);
+	*root = *root->right;
+	if (root->type == 0)
+	{
+		exec->out_gestion = 1;
+		exec->state_tab = (char **)root->content;
+	}
+	else
+	{
+		exec->out_gestion = 2;
+		exec->state_tab[0] = (char *)root->content;
+		exec->state_tab[1] = NULL;
+	}
 }

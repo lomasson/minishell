@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:52:11 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/19 09:24:08 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/07/27 16:45:01 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	built_in_cd(char *path, t_environement *env)
 
 	i = 0;
 	old++;
+	if (!path)
+		path = ft_strchr(env->var[4], '/');
 	if (path[0] != '/')
 	{
 		while (ft_strncmp(env->var[i], "PWD", 3) != 0)
