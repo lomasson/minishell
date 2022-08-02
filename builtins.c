@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/02 12:39:59 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 19:17:11 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,5 +163,6 @@ int	ft_exit(char **state_tab, t_environement *env,
 	//free(env->var);
 	(void)root;
 	(void)exec;
+	printf("%d\n", env->last);
 	exit(env->last);
 }

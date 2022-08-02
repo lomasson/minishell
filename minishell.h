@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/02 10:02:02 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 16:05:27 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char		*parse_iter(char *str, int *quote, t_environement *env);
 int			parse_argument(t_binbash *node, t_environement *env);
 int			exec_cmd(char **command, int fd_in,
 				int fd_out, t_environement *env);
-void		exec_all_command(t_binbash root, t_environement *env);
+void		exec_all_command(t_binbash *root, t_environement *env);
 char		*parsing_access_test(char **path, char **cmd_splited);
 
 void		ft_exec_built_in(char **cmd_splited, t_exec_gestion *exec,
