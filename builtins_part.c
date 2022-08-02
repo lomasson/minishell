@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:52:11 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/27 16:45:01 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 12:38:13 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,18 @@ void	built_in_cd(char *path, t_environement *env)
 	char		**op_path;
 
 	i = 0;
-	old++;
 	if (!path)
-		path = ft_strchr(env->var[4], '/');
+	{
+		while (ft_strncmp(env->var[i], "HOME", 4) != 0 && env->var[i])
+			i++;
+		if (!env->var[i])
+		{
+			ft_putstr_fd("cd: HOME not set", 3);
+			return ;
+		}
+		path = ft_strchr(env->var[i], '/');
+	}
+	i = 0;
 	if (path[0] != '/')
 	{
 		while (ft_strncmp(env->var[i], "PWD", 3) != 0)
@@ -36,6 +45,10 @@ void	built_in_cd(char *path, t_environement *env)
 		while (op_path[++j])
 			str = ft_change_path(op_path[j], str);
 		env->var[i] = str;
+		i = -1;
+		while (op_path[++i])
+			free(op_path[i]);
+		free(op_path);
 	}
 	if (chdir(path) == -1)
 		perror(path);

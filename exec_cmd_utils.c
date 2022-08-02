@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/28 18:59:49 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 10:03:02 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	gestion_pipe(t_binbash *root, t_environement *env, int fd_entry)
 		dup2(pipe_e[1], STDOUT_FILENO);
 		close(pipe_e[0]);
 		close(pipe_e[1]);
-		exec_all_command(root->left, env);
+		exec_all_command(*root->left, env);
 		close(fd_entry);
 		close(pipe_e[0]);
 		close(pipe_e[1]);
@@ -67,13 +67,14 @@ char	**output_redirection(int *out_gestion, t_binbash *root,
 		state_tmp = (char **)root->right->content;
 	else
 		state_tmp = (char **)root->right->left->content;
-	if (ft_strcmp(state_tab[0], ">") == 0)
+	if (state_tab && ft_strncmp(state_tab[0], ">", 2) == 0)
 		fd_out[0] = open(state_tmp[0],
 				O_RDWR | O_CREAT | O_TRUNC, 0777);
 	else if (ft_strcmp(state_tab[0], ">>") == 0)
 		fd_out[0] = open(state_tmp[0],
 				O_CREAT | O_APPEND | O_RDWR, 0777);
 	out_gestion[0] = 1;
+	freetab(state_tmp);
 	return ((char **)root->left->content);
 }
 
@@ -99,9 +100,12 @@ int	ft_interation_gestion(t_exec_gestion *exec,
 	t_environement *env, t_binbash *root)
 {
 	if (ft_is_built_in(exec->state_tab[0]))
-		ft_exec_built_in(exec->state_tab, exec->fd_entry, exec->fd, env);
+		ft_exec_built_in(exec->state_tab, exec, env, root);
 	else if (exec->state_tab && exec->out_gestion != 2)
+	{
 		exec_cmd(exec->state_tab, exec->fd_entry, exec->fd[1], env);
+		strerror(errno);
+	}
 	if (root->right && exec->out_gestion != 2)
 		*root = *root->right;
 	if (!root->right && !root->left)
@@ -157,4 +161,6 @@ void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
 	gestion_heredoc(state_tab[0]);
 	exec_cmd(state_tmp, STDIN_FILENO, exec->fd[1], env);
 	*root = *root->right;
+	freetab(state_tab);
+	freetab(state_tmp);
 }

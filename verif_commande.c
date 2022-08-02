@@ -6,10 +6,9 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 14:50:51 by chajjar           #+#    #+#             */
-/*   Updated: 2022/07/27 12:12:19 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/01 17:45:55 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/28 16:31:32 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 10:02:02 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,11 @@ char		*parse_iter(char *str, int *quote, t_environement *env);
 int			parse_argument(t_binbash *node, t_environement *env);
 int			exec_cmd(char **command, int fd_in,
 				int fd_out, t_environement *env);
-t_binbash	*exec_all_command(t_binbash *root, t_environement *env);
+void		exec_all_command(t_binbash root, t_environement *env);
 char		*parsing_access_test(char **path, char **cmd_splited);
 
-void		ft_exec_built_in(char **cmd_splited,
-				int fd_entry, int *fds, t_environement *env);
+void		ft_exec_built_in(char **cmd_splited, t_exec_gestion *exec,
+				t_environement *env, t_binbash *root);
 bool		ft_is_built_in(char *command);
 void		built_in_cd(char *path, t_environement *env);
 void		built_in_pwd(int fd);
@@ -91,7 +91,8 @@ int			ft_pipe(t_binbash *root,
 void		ft_export_utils(t_environement *env, char *name);
 int			gestion_pipe(t_binbash *root, t_environement *env, int fd_entry);
 int			gestion_heredoc(char *arg_stop);
-int			ft_exit(char **state_tab, t_environement *env);
+int			ft_exit(char **state_tab, t_environement *env,
+				t_binbash *root, t_exec_gestion *exec);
 char		**output_redirection(int *out_gestion, t_binbash *root,
 				char **state_tab, int *fd_out);
 void		ft_exec_all_command_part_two(t_exec_gestion *exec,
@@ -106,4 +107,6 @@ int			ft_interation_gestion(t_exec_gestion *exec,
 void		ft_find_error_numbers(t_environement *env, int status);
 void		ft_heredoc(t_binbash *root, t_exec_gestion *exec,
 				t_environement *env);
+void		freetab(char **str);
+void		struct_destroyer(t_exec_gestion *exec);
 #endif

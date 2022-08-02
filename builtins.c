@@ -6,27 +6,26 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/07/27 12:02:15 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 12:39:59 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*execut the built-in informed in param*/
-void	ft_exec_built_in(char **cmd_splited,
-	int fd_entry, int *fds, t_environement *env)
+void	ft_exec_built_in(char **cmd_splited, t_exec_gestion *exec, t_environement *env, t_binbash *root)
 {
-	if (fd_entry != 0)
+	if (exec->fd_entry != 0)
 	{
-		dup2(fd_entry, STDIN_FILENO);
-		close(fd_entry);
+		dup2(exec->fd_entry, STDIN_FILENO);
+		close(exec->fd_entry);
 	}
 	if (ft_strcmp(cmd_splited[0], "pwd") == 0)
-		built_in_pwd(fds[1]);
+		built_in_pwd(exec->fd[1]);
 	else if (ft_strcmp(cmd_splited[0], "echo") == 0)
-		built_in_echo(cmd_splited, fds[1]);
+		built_in_echo(cmd_splited, exec->fd[1]);
 	else if (ft_strcmp(cmd_splited[0], "env") == 0)
-		built_in_env(env, fds[1]);
+		built_in_env(env, exec->fd[1]);
 	if (ft_strcmp(cmd_splited[0], "cd") == 0)
 		built_in_cd(cmd_splited[1], env);
 	else if (ft_strcmp(cmd_splited[0], "export") == 0)
@@ -34,7 +33,7 @@ void	ft_exec_built_in(char **cmd_splited,
 	else if (ft_strcmp(cmd_splited[0], "unset") == 0)
 		built_in_unset(env, cmd_splited[1]);
 	else if (ft_strcmp(cmd_splited[0], "exit") == 0)
-		ft_exit(cmd_splited, env);
+		ft_exit(cmd_splited, env, root, exec);
 }
 
 /* Check if command informed in param is a built-in*/
@@ -67,10 +66,12 @@ char	*change_old_path(t_environement *env)
 
 	j = 0;
 	i = 0;
-	while (ft_strncmp(env->var[i], "PWD", 3) != 0 && env->var[j])
+	while (ft_strncmp(env->var[i], "PWD", 3) != 0 && env->var[i])
 			i++;
 	while (ft_strncmp(env->var[j], "OLDPWD", 6) != 0 && env->var[j])
 			j++;
+	if (!env->var[i])
+		return(env->var[j]);
 	str = ft_strchr(env->var[i], '/');
 	return (ft_strjoin("OLDPWD=", str));
 }
@@ -130,7 +131,8 @@ void	ft_export_utils(t_environement *env, char *name)
 	free (frag);
 }
 
-int	ft_exit(char **state_tab, t_environement *env)
+int	ft_exit(char **state_tab, t_environement *env,
+	t_binbash *root, t_exec_gestion *exec)
 {
 	int	i;
 	int	j;
@@ -156,5 +158,10 @@ int	ft_exit(char **state_tab, t_environement *env)
 		env->last = 1;
 		return (1);
 	}
+	free(exec->state_tab);
+	//del_arbre_binaire(root);
+	//free(env->var);
+	(void)root;
+	(void)exec;
 	exit(env->last);
 }
