@@ -26,6 +26,9 @@
 # include <string.h>
 # include <stdbool.h>
 # include <signal.h>
+# include <sys/ioctl.h>
+# include <curses.h>
+# include <term.h>
 
 # define SET_SPACE " \n\t\v\r\f"
 

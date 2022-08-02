@@ -16,11 +16,14 @@ static void	sigint_handler(int signal)
 {
 	if (signal == SIGINT)
 	{
-		printf("\n");
-		rl_on_new_line();
+
+		
+		//ft_putstr_fd("\033[13C\033[J\n", 1);
 		rl_replace_line("", 0);
+		rl_on_new_line();
 		rl_redisplay();
 	}
+
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -32,7 +35,7 @@ int	main(int argc, char **argv, char **envp)
 	env.var = envp;
 	env.last = 0;
 	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	while (1)
 	{
 		buffer = readline("\033[32mMINISHELL $> \033[0m");
