@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 13:43:14 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/02 10:18:11 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 19:21:54 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	main(int argc, char **argv, char **envp)
 		root = arbre_decison_tree(creat_node(buffer, 0));
 		//display_tree(root, 0);
 		if (globale_verif(root, &env))
-			exec_all_command(*root, &env);
+			exec_all_command(root, &env);
 		else
 			ft_printf("parsing error retry\n");
 		del_arbre_binaire(root);
@@ -50,3 +50,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 }
+
+// exit code
+//export a revoir
+//unset a revoir

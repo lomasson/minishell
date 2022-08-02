@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/02 10:03:02 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/02 16:14:37 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	gestion_pipe(t_binbash *root, t_environement *env, int fd_entry)
 		dup2(pipe_e[1], STDOUT_FILENO);
 		close(pipe_e[0]);
 		close(pipe_e[1]);
-		exec_all_command(*root->left, env);
+		exec_all_command(root->left, env);
 		close(fd_entry);
 		close(pipe_e[0]);
 		close(pipe_e[1]);
@@ -74,7 +74,7 @@ char	**output_redirection(int *out_gestion, t_binbash *root,
 		fd_out[0] = open(state_tmp[0],
 				O_CREAT | O_APPEND | O_RDWR, 0777);
 	out_gestion[0] = 1;
-	freetab(state_tmp);
+	//freetab(state_tmp);
 	return ((char **)root->left->content);
 }
 
