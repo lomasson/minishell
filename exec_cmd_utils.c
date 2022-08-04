@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/02 16:14:37 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/04 11:29:11 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ int	gestion_pipe(t_binbash *root, t_environement *env, int fd_entry)
 		dup2(pipe_e[1], STDOUT_FILENO);
 		close(pipe_e[0]);
 		close(pipe_e[1]);
-		exec_all_command(root->left, env);
+		exec_all_command(*root->left, env);
 		close(fd_entry);
 		close(pipe_e[0]);
 		close(pipe_e[1]);
 		exit(EXIT_FAILURE);
 	}
 	else
-		waitpid(parent, NULL, 0);
+		waitpid(parent, &status, 0);
 	close(pipe_e[1]);
 	ft_find_error_numbers(env, status);
 	return (pipe_e[0]);
@@ -101,7 +101,7 @@ int	ft_interation_gestion(t_exec_gestion *exec,
 {
 	if (ft_is_built_in(exec->state_tab[0]))
 		ft_exec_built_in(exec->state_tab, exec, env, root);
-	else if (exec->state_tab && exec->out_gestion != 2)
+	else if (exec->state_tab && exec->out_gestion != 2 && exec->out_gestion != 3)
 	{
 		exec_cmd(exec->state_tab, exec->fd_entry, exec->fd[1], env);
 		strerror(errno);
@@ -131,6 +131,9 @@ void	ft_find_error_numbers(t_environement *env, int status)
 		env->last /= 256;
 	else
 		env->last = !!status;
+	// ft_printf("error numbers: >%d<\n", env->last);
+	// ft_printf("error numbers: >%d<\n", (status / 4) - env->last);
+	// ft_printf("error numbers: >%d<\n", errno);
 }
 
 void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
@@ -161,6 +164,6 @@ void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
 	gestion_heredoc(state_tab[0]);
 	exec_cmd(state_tmp, STDIN_FILENO, exec->fd[1], env);
 	*root = *root->right;
-	freetab(state_tab);
-	freetab(state_tmp);
+	//freetab(state_tab);
+	//freetab(state_tmp);
 }
