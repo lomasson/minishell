@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:30:40 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/05 12:57:06 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/05 14:59:07 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,12 @@ int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 	int		status;
 
 	status = 0;
+	path = cmd[0];
+	if (parsing_core(cmd[0], env->var))
+		path = parsing_core(cmd[0], env->var);
 	pid = fork();
 	if (!pid)
 	{
-		//path = NULL;
-		path = cmd[0];
-		if (parsing_core(cmd[0], env->var))
-			path = parsing_core(cmd[0], env->var);
 		if (fd_in != 0)
 		{
 			dup2(fd_in, STDIN_FILENO);
@@ -40,23 +39,17 @@ int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 			dup2(fd_out, STDOUT_FILENO);
 			close(fd_out);
 		}
-		if (execve(path, cmd, env->var) == -1)
-		{
-			perror (cmd[0]);
-			strerror(errno);
-			close(fd_in);
-			close(fd_out);
-			exit(errno);
-		}
+		execve(path, cmd, env->var);
 		close(fd_in);
 		close(fd_out);
-		exit(EXIT_FAILURE);
+		exit(status);
 	}
 	else
 		waitpid(pid, &status, 0);
-	ft_find_error_numbers(env, status);
+	env->last = error_message(path);
 	return (1);
 }
+
 void	exec_all_command(t_binbash root, t_environement *env)
 {
 	t_exec_gestion	exec;
@@ -125,6 +118,34 @@ void	ft_pipe_exec(t_exec_gestion *exec,
 	}
 }
 
+int	error_message(char *path)
+{
+	DIR	*folder;
+	int	fd;
+	int	ret;
+
+	fd = open(path, O_WRONLY);
+	folder = opendir(path);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(path, STDERR_FILENO);
+	if (ft_strchr(path, '/') == NULL)
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+	else if (fd == -1 && folder == NULL)
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	else if (fd == -1 && folder != NULL)
+		ft_putendl_fd(": is a directory", STDERR_FILENO);
+	else if (fd != -1 && folder == NULL)
+		ft_putendl_fd(": Permission denied", STDERR_FILENO);
+	if (ft_strchr(path, '/') == NULL || (fd == -1 && folder == NULL))
+		ret = 127;
+	else
+		ret = 126;
+	if (folder)
+		closedir(folder);
+	close(fd);
+	return (ret);
+}
+
 void	freetab(char **str)
 {
 	int	i;
@@ -132,7 +153,7 @@ void	freetab(char **str)
 	i = -1;
 	while (str[++i])
 		free (str[i]);
-	//free(str);
+	free(str);
 }
 
 char	**ft_copy_env(char **envp)

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/04 18:40:01 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/05 14:09:16 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include <sys/ioctl.h>
 # include <curses.h>
 # include <term.h>
+# include <dirent.h>
 
 # define SET_SPACE " \n\t\v\r\f"
 
@@ -113,4 +114,5 @@ void		ft_heredoc(t_binbash *root, t_exec_gestion *exec,
 void		freetab(char **str);
 void		struct_destroyer(t_exec_gestion *exec);
 char		**ft_copy_env(char **envp);
+int			error_message(char *path);
 #endif
