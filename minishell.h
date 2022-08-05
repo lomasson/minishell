@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/04 11:19:24 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/04 18:40:01 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void		built_in_unset(t_environement *env, char *name);
 void		ft_tabjoin(t_environement *env, char *src);
 int			ft_pipe(t_binbash *root,
 				t_environement *env, int *fd_in, int *fd_out);
-void		ft_export_utils(t_environement *env, char *name);
+int			ft_export_utils(t_environement *env, char *name);
 int			gestion_pipe(t_binbash *root, t_environement *env, int fd_entry);
 int			gestion_heredoc(char *arg_stop);
 int			ft_exit(char **state_tab, t_environement *env,
@@ -112,4 +112,5 @@ void		ft_heredoc(t_binbash *root, t_exec_gestion *exec,
 				t_environement *env);
 void		freetab(char **str);
 void		struct_destroyer(t_exec_gestion *exec);
+char		**ft_copy_env(char **envp);
 #endif

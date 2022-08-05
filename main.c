@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 13:43:14 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/04 11:52:43 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/05 12:57:34 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	sigint_handler(int signal)
 {
 	if (signal == SIGINT)
 	{
-		ft_putstr_fd("\033[13C\033[J\n", 1);
+		//ft_putstr_fd("\033[13C\033[J\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
@@ -29,7 +29,7 @@ int	main(int argc, char **argv, char **envp)
 	char			*buffer;
 	t_environement	env;
 
-	env.var = envp;
+	env.var = ft_copy_env(envp);
 	env.last = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
@@ -50,7 +50,3 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 }
-
-// exit code
-//export a revoir
-//unset a revoir

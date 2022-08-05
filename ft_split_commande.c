@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 13:49:03 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/04 10:57:39 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/04 12:08:22 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,13 @@ static char	**special_redirection(char **element, char *str)
 	if (!tmp)
 		return (element);
 	i = 1;
-	element[0] = tmp[0];
+	element[2] = tmp[0];
 	while (tmp[0] && tmp[i])
 		free(tmp[i++]);
 	free(tmp);
-	if (!element[0])
+	if (!element[2])
 		return (element);
-	element[2] = ft_substr(str, ft_strlen(element[0]) + (ft_strlen(str) - \
+	element[0] = ft_substr(str, ft_strlen(element[2]) + (ft_strlen(str) - \
 		ft_strlen(ft_strnotset(str, SET_SPACE))), ft_strlen(str));
 	return (element);
 }

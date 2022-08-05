@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 14:50:51 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/01 17:45:55 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/04 12:03:31 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,12 +100,12 @@ int	globale_verif(t_binbash *node, t_environement *env)
 		return (1);
 	if (node->type && ((node->left && !node->left->type \
 		&& (!node->left->content || !*((char **) node->left->content))) \
-		|| (node->right && !node->right->type \
+		&& (node->right && !node->right->type \
 		&& (!node->right->content || !*(char **) node->right->content))))
 		return (0);
 	if (!node->type && parse_argument(node, env))
 		return (0);
-	if (!globale_verif(node->left, env) || !globale_verif(node->right, env))
+	if (!globale_verif(node->left, env) && !globale_verif(node->right, env))
 		return (0);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/02 19:17:11 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/05 12:57:19 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,22 +78,30 @@ char	*change_old_path(t_environement *env)
 
 void	built_in_export(t_environement *env, char *name)
 {
-	int		i;
-	int		j;
-	int		egal;
-	char	**dest;
+	int				i;
+	int				j;
+	int				egal;
+	int				egal_w;
+	t_environement	*new;
+	char			**dest;
 
 	j = -1;
 	i = -1;
 	egal = 0;
+	new = malloc(sizeof(t_environement));
 	while (name[egal] != '=')
 		egal++;
-	while (env->var[++i])
-		if (ft_strncmp(env->var[i], name, egal) == 0)
+	egal_w = 0;
+	while (name[egal_w] != '=')
+		egal_w++;
+	if (egal_w > egal)
+		egal = egal_w;
+	while (env->var && env->var[++i])
+		if (ft_strncmp(env->var[i], name, egal + 1) == 0)
 			j = i;
 	dest = (char **)malloc(sizeof(char **) * ++i);
 	if (j >= 0)
-		ft_export_utils(env, name);
+		ft_export_utils(env, env->var[j]);
 	i = -1;
 	while (env->var[++i])
 		dest[i] = env->var[i];
@@ -117,18 +125,24 @@ void	built_in_unset(t_environement *env, char *name)
 	}
 }
 
-void	ft_export_utils(t_environement *env, char *name)
+int	ft_export_utils(t_environement *env, char *name)
 {
-	char	*frag;
-	int		i;
+	int	i;
+	int	j;
+	int n;
 
+	n = 0;
+	while (name[n] != '=')
+		n++;
 	i = 0;
-	while (name[i] != '=')
+	while (env->var[i] && ft_strcmp(env->var[i], name) != 0)
 		i++;
-	frag = ft_calloc(++i, sizeof(char));
-	ft_strlcpy(frag, name, i);
-	built_in_unset(env, frag);
-	free (frag);
+	j = i - 1;
+	if (env->var[i])
+		while (env->var[++j])
+			env->var[j] = env->var[j + 1];
+	env->var[j] = NULL;
+	return (1);
 }
 
 int	ft_exit(char **state_tab, t_environement *env,
@@ -140,6 +154,16 @@ int	ft_exit(char **state_tab, t_environement *env,
 	i = 0;
 	while (state_tab[++i])
 	{
+		if (i > 2)
+		{
+			ft_printf("exit: too many arguments\n");
+			env->last = 1;
+			return (1);
+		}
+	}
+	i = 0;
+	while (state_tab[++i])
+	{
 		j = -1;
 		while (state_tab[i][++j])
 		{
@@ -147,22 +171,17 @@ int	ft_exit(char **state_tab, t_environement *env,
 				|| state_tab[i][j] >= ' '))
 			{
 				ft_printf("exit: %s: numeric argument required\n", state_tab[i]);
-				env->last = 1;
+				env->last = 255;
 				return (1);
 			}
 		}
 	}
-	if (i > 2)
-	{
-		ft_printf("exit: too many arguments\n");
-		env->last = 1;
-		return (1);
-	}
-	free(exec->state_tab);
+	//free(exec->state_tab);
 	//del_arbre_binaire(root);
 	//free(env->var);
+	if (i > 1)
+		env->last = ft_atoi(state_tab[1]);
 	(void)root;
 	(void)exec;
-	printf("%d\n", env->last);
 	exit(env->last);
 }

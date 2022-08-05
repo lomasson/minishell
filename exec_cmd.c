@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:30:40 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/04 11:27:32 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/05 12:57:06 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 	pid = fork();
 	if (!pid)
 	{
+		//path = NULL;
 		path = cmd[0];
 		if (parsing_core(cmd[0], env->var))
 			path = parsing_core(cmd[0], env->var);
@@ -56,10 +57,6 @@ int	exec_cmd(char **cmd, int fd_in, int fd_out, t_environement *env)
 	ft_find_error_numbers(env, status);
 	return (1);
 }
-
-// exec.fd[1] = out
-// exec.fd[0] = in
-
 void	exec_all_command(t_binbash root, t_environement *env)
 {
 	t_exec_gestion	exec;
@@ -136,4 +133,23 @@ void	freetab(char **str)
 	while (str[++i])
 		free (str[i]);
 	//free(str);
+}
+
+char	**ft_copy_env(char **envp)
+{
+	int		i;
+	char	**dest;
+
+	i = 0;
+	while (envp[i])
+		i++;
+	dest = (char **)malloc(sizeof(char *) * i);
+	i = -1;
+	while (envp[++i])
+	{
+		dest[i] = malloc(sizeof(char) * (ft_strlen(envp[i]) + 1));
+		ft_strlcpy(dest[i], envp[i], ft_strlen(envp[i]) + 1);
+	}
+	dest[i] = NULL;
+	return (dest);
 }
