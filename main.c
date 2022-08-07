@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 13:43:14 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/05 12:57:34 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/08 01:55:23 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,16 @@ static void	sigint_handler(int signal)
 	}
 }
 
+void	free_array(char **str)
+{
+	int	i;
+
+	i = -1;
+	while (str[++i])
+		free (str[i]);
+	free(str);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_binbash		*root;
@@ -37,10 +47,10 @@ int	main(int argc, char **argv, char **envp)
 	{
 		buffer = readline("\033[32mMINISHELL $> \033[0m");
 		if (!buffer)
-			return (0);
+			exit (1);
 		add_history(buffer);
 		root = arbre_decison_tree(creat_node(buffer, 0));
-		display_tree(root, 0);
+		//display_tree(root, 0);
 		if (globale_verif(root, &env))
 			exec_all_command(*root, &env);
 		else
