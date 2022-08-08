@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   verif_commande.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 14:50:51 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/04 12:03:31 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/08 01:09:47 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ char	*parse_iter(char *str, int *quote, t_environement *env)
 	return (ptr);
 }
 
-int	parse_argument(t_binbash *node, t_environement *env)
+/*int	parse_argument(t_binbash *node, t_environement *env)
 {
 	char	**str;
 	int		quote;
@@ -86,7 +86,30 @@ int	parse_argument(t_binbash *node, t_environement *env)
 	while (str[i])
 	{
 		str[i] = parse_iter(str[i], &quote, env);
+		free(((char **)node->content)[i]);
 		node->content = (void *) str;
+		if (quote != 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}*/
+
+int	parse_argument(t_binbash *node, t_environement *env)
+{
+	char	**str;
+	int		quote;
+	int		i;
+	char 	*tmp;
+
+	quote = 0;
+	i = 0;
+	str = (char **)node->content;
+	while (str[i])
+	{
+		tmp = parse_iter(str[i], &quote, env);
+		free(((char **)node->content)[i]);
+		((char **)node->content)[i] = tmp;
 		if (quote != 0)
 			return (1);
 		i++;

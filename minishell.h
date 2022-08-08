@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/05 14:09:16 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/08 02:16:11 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ void		ft_find_error_numbers(t_environement *env, int status);
 void		ft_heredoc(t_binbash *root, t_exec_gestion *exec,
 				t_environement *env);
 void		freetab(char **str);
+void		free_array(char **array);
 void		struct_destroyer(t_exec_gestion *exec);
 char		**ft_copy_env(char **envp);
 int			error_message(char *path);

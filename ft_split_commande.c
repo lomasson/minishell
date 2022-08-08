@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_commande.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
+/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 13:49:03 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/04 12:08:22 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/08 01:19:31 by chajjar          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,12 +109,12 @@ static char	**ft_alloc_element(
 	len = ft_strlen(str) - len2;
 	if (ft_strnotset(str, SET_SPACE) != &str[len])
 	{
-		element[0] = ft_calloc(len, sizeof(char));
+		element[0] = ft_calloc(len + 1, sizeof(char));
 		ft_strlcpy(element[0], str, len + 1);
 	}
 	if (condition(&str[len]))
 	{
-		element[1] = ft_calloc(condition(&str[len]), sizeof(char));
+		element[1] = ft_calloc(condition(&str[len + 1]), sizeof(char));
 		ft_strlcpy(element[1], &str[len], condition(&str[len]) + 1);
 	}
 	if (len2 && ft_strnotset(str, SET_SPACE) == &str[len]
@@ -123,7 +123,7 @@ static char	**ft_alloc_element(
 		element, &str[len] + condition(&str[len]));
 	else if (len2)
 	{
-		element[2] = ft_calloc(len2, sizeof(char));
+		element[2] = ft_calloc(len2 + 1, sizeof(char));
 		ft_strlcpy(element[2], &str[len + condition(&str[len])], len2 + 1);
 	}
 	return (element);
