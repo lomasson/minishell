@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 02:16:11 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/08/08 19:00:56 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,12 @@ int			exec_cmd(char **command, int fd_in,
 				int fd_out, t_environement *env);
 void		exec_all_command(t_binbash root, t_environement *env);
 char		*parsing_access_test(char **path, char **cmd_splited);
-
+char		**ft_alloc_element(
+				char **element, char *str, int (*condition)(char *));
+char		**ft_alloc_ellement_two(char **element, char *str,
+				int (*condition)(char *), int len2);
+char		**special_redirection(char **element, char *str);
+char		*ft_strnotset(char *str, char *set);
 void		ft_exec_built_in(char **cmd_splited, t_exec_gestion *exec,
 				t_environement *env, t_binbash *root);
 bool		ft_is_built_in(char *command);
@@ -109,11 +114,16 @@ char		**input_redirection(t_environement *env, t_binbash *root,
 int			ft_interation_gestion(t_exec_gestion *exec,
 				t_environement *env, t_binbash *root);
 void		ft_find_error_numbers(t_environement *env, int status);
-void		ft_heredoc(t_binbash *root, t_exec_gestion *exec,
-				t_environement *env);
+void		ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env);
 void		freetab(char **str);
 void		free_array(char **array);
 void		struct_destroyer(t_exec_gestion *exec);
 char		**ft_copy_env(char **envp);
 int			error_message(char *path);
+void		ft_child_fonc(char **cmd, int fd_in,
+				int fd_out, t_environement *env);
+int			ft_check_arg_exit(char **state_tab, t_environement *env);
+void		change_path_and_old(char *path, t_environement *env);
+int			ft_str_egal(char *str);
+char		*get_path_home(t_environement *env);
 #endif

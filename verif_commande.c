@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   verif_commande.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 14:50:51 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/08 01:09:47 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/08/08 16:04:19 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	parse_argument(t_binbash *node, t_environement *env)
 	char	**str;
 	int		quote;
 	int		i;
-	char 	*tmp;
+	char	*tmp;
 
 	quote = 0;
 	i = 0;
@@ -128,7 +128,7 @@ int	globale_verif(t_binbash *node, t_environement *env)
 		return (0);
 	if (!node->type && parse_argument(node, env))
 		return (0);
-	if (!globale_verif(node->left, env) && !globale_verif(node->right, env))
+	if (!globale_verif(node->left, env) || !globale_verif(node->right, env))
 		return (0);
 	return (1);
 }

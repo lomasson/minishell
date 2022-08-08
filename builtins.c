@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 10:51:20 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 01:48:41 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/08/08 15:26:19 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*execut the built-in informed in param*/
-void	ft_exec_built_in(char **cmd_splited, t_exec_gestion *exec, t_environement *env, t_binbash *root)
+void	ft_exec_built_in(char **cmd_splited, t_exec_gestion *exec,
+	t_environement *env, t_binbash *root)
 {
 	if (exec->fd_entry != 0)
 	{
@@ -71,7 +72,7 @@ char	*change_old_path(t_environement *env)
 	while (ft_strncmp(env->var[j], "OLDPWD", 6) != 0 && env->var[j])
 			j++;
 	if (!env->var[i])
-		return(env->var[j]);
+		return (env->var[j]);
 	str = ft_strchr(env->var[i], '/');
 	return (ft_strjoin("OLDPWD=", str));
 }
@@ -81,21 +82,11 @@ void	built_in_export(t_environement *env, char *name)
 	int				i;
 	int				j;
 	int				egal;
-	int				egal_w;
-	t_environement	*new;
 	char			**dest;
 
 	j = -1;
 	i = -1;
-	egal = 0;
-	new = malloc(sizeof(t_environement));
-	while (name[egal] != '=')
-		egal++;
-	egal_w = 0;
-	while (name[egal_w] != '=')
-		egal_w++;
-	if (egal_w > egal)
-		egal = egal_w;
+	egal = ft_str_egal(name);
 	while (env->var && env->var[++i])
 		if (ft_strncmp(env->var[i], name, egal + 1) == 0)
 			j = i;
@@ -123,65 +114,4 @@ void	built_in_unset(t_environement *env, char *name)
 		env->var[i] = env->var[i + 1];
 		i++;
 	}
-}
-
-int	ft_export_utils(t_environement *env, char *name)
-{
-	int	i;
-	int	j;
-	int n;
-
-	n = 0;
-	while (name[n] != '=')
-		n++;
-	i = 0;
-	while (env->var[i] && ft_strcmp(env->var[i], name) != 0)
-		i++;
-	j = i - 1;
-	if (env->var[i])
-		while (env->var[++j])
-			env->var[j] = env->var[j + 1];
-	env->var[j] = NULL;
-	return (1);
-}
-
-int	ft_exit(char **state_tab, t_environement *env,
-	t_binbash *root, t_exec_gestion *exec)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (state_tab[++i])
-	{
-		if (i > 2)
-		{
-			ft_printf("exit: too many arguments\n");
-			env->last = 1;
-			return (1);
-		}
-	}
-	i = 0;
-	while (state_tab[++i])
-	{
-		j = -1;
-		while (state_tab[i][++j])
-		{
-			if (!((state_tab[i][j] <= '9' && state_tab[i][j] >= '0')
-				|| state_tab[i][j] >= ' '))
-			{
-				ft_printf("exit: %s: numeric argument required\n", state_tab[i]);
-				env->last = 255;
-				return (1);
-			}
-		}
-	}
-	//free(exec->state_tab);
-	//del_arbre_binaire(root);
-	//free(env->var);
-	if (i > 1)
-		env->last = ft_atoi(state_tab[1]);
-	(void)root;
-	(void)exec;
-	exit(env->last);
 }

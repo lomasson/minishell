@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/04 11:29:11 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/08 19:01:09 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ char	**output_redirection(int *out_gestion, t_binbash *root,
 		fd_out[0] = open(state_tmp[0],
 				O_CREAT | O_APPEND | O_RDWR, 0777);
 	out_gestion[0] = 1;
-	//freetab(state_tmp);
 	return ((char **)root->left->content);
 }
 
@@ -93,6 +92,7 @@ char	**input_redirection(t_environement *env, t_binbash *root,
 	}
 	if (ft_strcmp(state_tab[0], "<<") == 0)
 		ft_heredoc(root, exec, env);
+	(void)env;
 	return (state_tab);
 }
 
@@ -101,7 +101,8 @@ int	ft_interation_gestion(t_exec_gestion *exec,
 {
 	if (ft_is_built_in(exec->state_tab[0]))
 		ft_exec_built_in(exec->state_tab, exec, env, root);
-	else if (exec->state_tab && exec->out_gestion != 2 && exec->out_gestion != 3)
+	else if (exec->state_tab && exec->out_gestion != 2
+		&& exec->out_gestion != 3)
 	{
 		exec_cmd(exec->state_tab, exec->fd_entry, exec->fd[1], env);
 		strerror(errno);
@@ -123,47 +124,4 @@ int	ft_interation_gestion(t_exec_gestion *exec,
 		}
 	}
 	return (1);
-}
-
-void	ft_find_error_numbers(t_environement *env, int status)
-{
-	if (status == 32256 || status == 32512)
-		env->last /= 256;
-	else
-		env->last = !!status;
-	// ft_printf("error numbers: >%d<\n", env->last);
-	// ft_printf("error numbers: >%d<\n", (status / 4) - env->last);
-	// ft_printf("error numbers: >%d<\n", errno);
-}
-
-void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
-{
-	char	**state_tab;
-	char	**state_tmp;
-
-	state_tab = exec->state_tab;
-	state_tmp = exec->state_tab;
-	if (root->right->type == 0)
-	{
-		state_tab = (char **)root->right->content;
-		pipe(exec->fd);
-		exec->fd_entry = exec->fd[0];
-	}
-	else
-	{
-		state_tab[0] = (char *)root->right->content;
-		state_tab[1] = NULL;
-		output_redirection(&exec->out_gestion,
-			root->right, state_tab, &exec->fd[1]);
-		state_tab = (char **)root->right->left->content;
-	}
-	state_tmp = (char **)root->left->content;
-	state_tmp[1] = "/tmp/heredoc";
-	state_tmp[2] = NULL;
-	exec->out_gestion = 3;
-	gestion_heredoc(state_tab[0]);
-	exec_cmd(state_tmp, STDIN_FILENO, exec->fd[1], env);
-	*root = *root->right;
-	//freetab(state_tab);
-	//freetab(state_tmp);
 }

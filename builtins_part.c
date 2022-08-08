@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:52:11 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/04 14:56:33 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/08 15:29:11 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,16 @@
 
 void	built_in_cd(char *path, t_environement *env)
 {
-	int			i;
-	int			j;
-	static int	old;
-	char		*str;
-	char		**op_path;
+	int	i;
 
 	i = 0;
 	if (!path)
-	{
-		while (ft_strncmp(env->var[i], "HOME", 4) != 0 && env->var[i])
-			i++;
-		if (!env->var[i])
-		{
-			ft_putstr_fd("cd: HOME not set", 3);
-			return ;
-		}
-		path = ft_strchr(env->var[i], '/');
-	}
+		path = get_path_home(env);
+	if (!path)
+		return ;
 	i = 0;
 	if (path[0] != '/')
-	{
-		while (ft_strncmp(env->var[i], "PWD", 3) != 0)
-			i++;
-		if (old++ > 0 && ft_strncmp(env->var[i + 1], "OLDPWD", 6) == 0)
-			env->var[i + 1] = change_old_path(env);
-		str = env->var[i];
-		op_path = ft_split(path, '/');
-		j = -1;
-		while (op_path[++j])
-			str = ft_change_path(op_path[j], str);
-		env->var[i] = str;
-		i = -1;
-		while (op_path[++i])
-			free(op_path[i]);
-		free(op_path);
-	}
+		change_path_and_old(path, env);
 	if (chdir(path) == -1)
 		perror(path);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arbre_binaire.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:42:47 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/08 00:40:30 by chajjar          ###   ########.fr       */
+/*   Updated: 2022/08/08 19:36:00 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void	del_arbre_binaire(t_binbash *root)
 	if (!root)
 		return ;
 	if (!root->type)
-		free_array((char **)root->content);
+		;
+	//free_array((char **)root->content);
 	else
 		free(root->content);
 	del_arbre_binaire(root->left);

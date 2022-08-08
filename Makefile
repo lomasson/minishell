@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chajjar <chajjar@student.42.fr>            +#+  +:+       +#+         #
+#    By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/08/08 01:10:53 by chajjar          ###   ########.fr        #
+#    Updated: 2022/08/08 18:00:26 by lomasson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ TEST_ARGS =
 COMPILER = default
 FLAGS = -Wall -Werror -Wextra -g3 -I /usr/local/opt/readline/include -I ~/.brew/opt/readline/include
 ifneq ($(OS), Windows_NT)
-#	DANGER = -fsanitize=address -g3
+	DANGER = -fsanitize=address -g3
 endif
 LIBRARIES =  -lreadline
 LIBS_MAC = -L /usr/local/Cellar/readline/8.1.2/lib/  -L /usr/local/opt/readline/lib/  -L ~/.brew/opt/readline/lib 
@@ -61,7 +61,7 @@ PIPEX = $(addprefix $(PIPEX_FOLDER), $(PIPEX_FILES))
 
 # Listing every source files
 ALL = $(LIBFT) $(PIPEX) \
-	arbre_binaire check_condition ft_split_commande ft_split_argument main verif_commande builtins exec_cmd builtins_part exec_cmd_utils
+	arbre_binaire check_condition ft_split_commande ft_split_argument main verif_commande builtins exec_cmd builtins_part exec_cmd_utils exec_split_norm fonc_utils_minishell ft_last_build
 SUBFOLDER = 
 
 # Adds the applicable extension and path to each files
