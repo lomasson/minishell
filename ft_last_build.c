@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 15:25:16 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 15:29:29 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 12:31:29 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,10 @@ void	change_path_and_old(char *path, t_environement *env)
 	char		**op_path;
 
 	i = 0;
-	while (ft_strncmp(env->var[i], "PWD", 3) != 0)
+	while (ft_strncmp(env->var[i], "PWD", 3) != 0 && env->var[i])
 		i++;
+	if (!env->var[i])
+		return ;
 	if (old++ > 0 && ft_strncmp(env->var[i + 1], "OLDPWD", 6) == 0)
 		env->var[i + 1] = change_old_path(env);
 	str = env->var[i];
@@ -80,4 +82,13 @@ int	ft_str_egal(char *str)
 	while (str[i] != '=')
 		i++;
 	return (i);
+}
+
+char	**def_state(char **state_tab, t_binbash *root, t_exec_gestion *exec)
+{
+	state_tab[0] = (char *)root->right->content;
+	state_tab[1] = NULL;
+	output_redirection(&exec->out_gestion,
+		root->right, state_tab, &exec->fd[1]);
+	return ((char **)root->right->left->content);
 }

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 14:50:51 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/08 16:04:19 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 11:45:07 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static char	*find_var(char **env, char *key)
 		found = ft_strnstr(env[i++], search, y);
 	if (!found)
 		return (ft_strdup(""));
-	return (ft_substr(found, y + 2, ft_strlen(found) - y));
+	return (ft_substr(found, y + 1, ft_strlen(found) - y));
 }
 
 static char	*parse_env(char *ptr, char *str, int *i, t_environement *env)

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 19:00:56 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 12:31:15 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,8 @@ char		**input_redirection(t_environement *env, t_binbash *root,
 int			ft_interation_gestion(t_exec_gestion *exec,
 				t_environement *env, t_binbash *root);
 void		ft_find_error_numbers(t_environement *env, int status);
-void		ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env);
+void		ft_heredoc(t_binbash *root, t_exec_gestion *exec,
+				t_environement *env);
 void		freetab(char **str);
 void		free_array(char **array);
 void		struct_destroyer(t_exec_gestion *exec);
@@ -126,4 +127,6 @@ int			ft_check_arg_exit(char **state_tab, t_environement *env);
 void		change_path_and_old(char *path, t_environement *env);
 int			ft_str_egal(char *str);
 char		*get_path_home(t_environement *env);
+char		**def_state(char **state_tab, t_binbash *root,
+				t_exec_gestion *exec);
 #endif

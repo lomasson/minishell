@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 19:01:09 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 12:22:50 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ int	ft_interation_gestion(t_exec_gestion *exec,
 		&& exec->out_gestion != 3)
 	{
 		exec_cmd(exec->state_tab, exec->fd_entry, exec->fd[1], env);
-		strerror(errno);
 	}
 	if (root->right && exec->out_gestion != 2)
 		*root = *root->right;

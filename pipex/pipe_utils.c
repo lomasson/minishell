@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 16:33:32 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/05 12:44:18 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 11:15:51 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,13 @@ char	*parsing_access_test(char **path, char **cmd_splited)
 	while (path[++i])
 	{
 		test = ft_strjoin(path[i], "/");
-		command = ft_strjoin(test, cmd_splited[0]);
-		free (test);
+		if (cmd_splited && cmd_splited[0])
+		{
+			command = ft_strjoin(test, cmd_splited[0]);
+			free (test);
+		}
+		else
+			command = NULL;
 		if (access(command, R_OK) == 0)
 			return (command);
 		free (command);
@@ -41,17 +46,20 @@ char	*parsing_core(char *cmd, char **env)
 
 	cmd_splited = ft_split(cmd, ' ');
 	i = 0;
-	while (ft_strncmp(env[i], "PATH", 4))
+	while (ft_strncmp(env[i], "PATH", 4) && env[i])
 		i++;
 	path = ft_split(env[i], ':');
 	j = -1;
-	command = parsing_access_test(path, cmd_splited);
+	if (path)
+		command = parsing_access_test(path, cmd_splited);
 	i = -1;
-	while (path[++i])
-		free (path[i]);
+	if (path)
+		while (path[++i])
+			free (path[i]);
 	free (path);
-	while (cmd_splited[++j])
-		free (cmd_splited[j]);
+	if (cmd_splited)
+		while (cmd_splited[++j])
+			free (cmd_splited[j]);
 	free (cmd_splited);
 	return (command);
 }

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/03 13:43:14 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/08 19:12:33 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 12:46:56 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	main(int argc, char **argv, char **envp)
 		if (globale_verif(root, &env))
 			exec_all_command(*root, &env);
 		else
-			ft_printf("parsing error retry\n");
+			ft_printf("syntax error near\n");
 		del_arbre_binaire(root);
 	}
 	(void)argc;

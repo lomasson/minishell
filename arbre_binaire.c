@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 15:42:47 by chajjar           #+#    #+#             */
-/*   Updated: 2022/08/08 19:36:00 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 12:39:54 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,8 @@ void	del_arbre_binaire(t_binbash *root)
 {
 	if (!root)
 		return ;
-	if (!root->type)
-		;
-	//free_array((char **)root->content);
+	if (!root->type && (char **)root->content)
+		free_array((char **)root->content);
 	else
 		free(root->content);
 	del_arbre_binaire(root->left);

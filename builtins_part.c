@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 16:52:11 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 15:29:11 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 10:32:42 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ void	built_in_cd(char *path, t_environement *env)
 	if (path[0] != '/')
 		change_path_and_old(path, env);
 	if (chdir(path) == -1)
+	{
+		env->last = 1;
 		perror(path);
+	}
 }
 
 void	built_in_pwd(int fd)

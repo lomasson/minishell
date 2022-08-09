@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 14:40:43 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 15:12:25 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 11:48:33 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,8 @@ void	ft_child_fonc(char **cmd, int fd_in, int fd_out, t_environement *env)
 		close(fd_out);
 	}
 	if (execve(path, cmd, env->var) == -1)
-		env->last = error_message(path);
+		if (path)
+			env->last = error_message(path);
 	close(fd_in);
 	close(fd_out);
 	free (path);
@@ -99,8 +100,7 @@ int	ft_check_arg_exit(char **state_tab, t_environement *env)
 		j = -1;
 		while (state_tab[i][++j])
 		{
-			if (!((state_tab[i][j] <= '9' && state_tab[i][j] >= '0')
-				|| state_tab[i][j] >= ' '))
+			if (!(state_tab[i][j] <= '9' && state_tab[i][j] >= '0'))
 			{
 				ft_printf("exit: %s: numeric argument required\n", state_tab[i]);
 				env->last = 255;

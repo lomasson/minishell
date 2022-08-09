@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 14:15:41 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/08 19:37:30 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 12:31:02 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,7 @@ void	ft_heredoc(t_binbash *root, t_exec_gestion *exec, t_environement *env)
 		exec->fd_entry = exec->fd[0];
 	}
 	else
-	{
-		state_tab[0] = (char *)root->right->content;
-		state_tab[1] = NULL;
-		output_redirection(&exec->out_gestion,
-			root->right, state_tab, &exec->fd[1]);
-		state_tab = (char **)root->right->left->content;
-	}
-	//state_tmp = (char **)root->left->content;
+		state_tab = def_state(state_tab, root, exec);
 	state_tmp[0] = "cat";
 	state_tmp[1] = "/tmp/heredoc";
 	state_tmp[2] = NULL;

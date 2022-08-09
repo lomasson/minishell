@@ -6,7 +6,7 @@
 #    By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/08/08 18:00:26 by lomasson         ###   ########.fr        #
+#    Updated: 2022/08/09 12:35:36 by lomasson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ TEST_ARGS =
 COMPILER = default
 FLAGS = -Wall -Werror -Wextra -g3 -I /usr/local/opt/readline/include -I ~/.brew/opt/readline/include
 ifneq ($(OS), Windows_NT)
-	DANGER = -fsanitize=address -g3
+#	DANGER = -fsanitize=address -g3
 endif
 LIBRARIES =  -lreadline
 LIBS_MAC = -L /usr/local/Cellar/readline/8.1.2/lib/  -L /usr/local/opt/readline/lib/  -L ~/.brew/opt/readline/lib 
