@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 11:20:13 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/09 12:31:15 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 12:52:32 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct s_binbash
 	struct s_binbash	*right;
 	struct s_binbash	*left;
 	struct s_binbash	*prev;
+	struct s_binbash	*origin;
 }	t_binbash;
 
 typedef struct s_environement

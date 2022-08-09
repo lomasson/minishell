@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:10 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/09 12:22:50 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 13:26:55 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int	gestion_heredoc(char *arg_stop)
 			break ;
 		ft_putstr_fd(str, fd);
 		ft_putchar_fd('\n', fd);
+		free (str);
 	}
 	lseek(fd, 0, SEEK_SET);
 	return (fd);

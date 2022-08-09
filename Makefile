@@ -6,7 +6,7 @@
 #    By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/28 11:16:04 by lomasson          #+#    #+#              #
-#    Updated: 2022/08/09 12:35:36 by lomasson         ###   ########.fr        #
+#    Updated: 2022/08/09 13:16:25 by lomasson         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -190,6 +190,3 @@ fclean: clean
 	@del /F /Q $(addsuffix .exe, $(subst /,\,$(NAME)))
 
 endif
-
-# Personal free to use template
-# BY Rosie~

@@ -6,7 +6,7 @@
 /*   By: lomasson <lomasson@student.42mulhouse.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:30:40 by lomasson          #+#    #+#             */
-/*   Updated: 2022/08/09 12:43:49 by lomasson         ###   ########.fr       */
+/*   Updated: 2022/08/09 13:21:30 by lomasson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ void	exec_struct_initer(t_binbash *root, t_exec_gestion *exec)
 	else
 	{
 		exec->state_tab = ft_calloc(sizeof(char **), 3);
+		free (exec->state_tab);
 		exec->state_tab[0] = (char *)root->content;
 		exec->state_tab[1] = NULL;
 		exec->state_tab[2] = NULL;
